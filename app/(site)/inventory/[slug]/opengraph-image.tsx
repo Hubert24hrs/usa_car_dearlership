@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { cachedVehicleBySlug } from "@/lib/inventory/cached";
 import { formatMileage, formatPrice, vehicleTitle } from "@/lib/format";
 import { vehiclePlaceholderSvg } from "@/lib/placeholder";
+import { absoluteUrl } from "@/lib/site.config";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -11,8 +12,9 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
   const { slug } = await params;
   const v = await cachedVehicleBySlug(slug.toLowerCase());
   const title = v ? vehicleTitle(v) : "Vehicle for sale";
-  // Prefer the listing's own photo; fall back to generated artwork.
-  const photo = v?.images.find((src) => /^https:\/\/.+\.(png|jpe?g|webp)(\?|$)/i.test(src));
+  // Prefer the listing's own photo (PNG/JPEG, which the OG renderer can decode); fall back to generated artwork.
+  const listed = v?.images.find((src) => /^(https:\/\/|\/(?!\/)).+\.(png|jpe?g)(\?|$)/i.test(src));
+  const photo = listed?.startsWith("/") ? absoluteUrl(listed) : listed;
   const art = photo
     ? photo
     : v
