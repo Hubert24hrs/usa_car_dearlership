@@ -186,6 +186,8 @@ npm run test:e2e              # builds, starts on :3100 and runs e2e (needs a se
 
 Set `E2E_BASE_URL` to test an already-running server, or `E2E_SKIP_BUILD=1` to reuse an existing build.
 
+**CI:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request. It does the type-check, lint and unit tests, then creates the schema on a Postgres 17 service, seeds the 1,500-vehicle demo inventory, makes a production build and runs the Playwright suite.
+
 ## Deploying to Vercel
 
 1. **Database** — create a free Postgres on Neon, Supabase or Prisma Postgres. Copy the pooled connection string into `DATABASE_URL`.

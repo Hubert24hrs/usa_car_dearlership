@@ -1,0 +1,103 @@
+# Continuous integration: type-check, lint, unit tests, a production build
+# against a seeded Postgres, and the Playwright end-to-end suite.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Type-check, lint, test, build, e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dealership
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dealership
+      NEXT_PUBLIC_SITE_URL: http://localhost:3100
+      SHOW_DEMO_INVENTORY: "true"
+      AUTH_TRUST_HOST: "true"
+      SEED_ADMIN_EMAIL: admin@example.com
+      NEXT_TELEMETRY_DISABLED: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Generate throwaway secrets for this run
+        run: |
+          for name in AUTH_SECRET CRON_SECRET INVENTORY_SYNC_SECRET SEED_ADMIN_PASSWORD; do
+            echo "$name=ci-$(openssl rand -hex 24)" >> "$GITHUB_ENV"
+          done
+
+      # `npm ci` once package-lock.json includes the dev dependencies.
+      - name: Install dependencies (runs prisma generate)
+        run: npm install --no-audit --no-fund
+
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+
+      - name: Create database schema
+        run: |
+          if ls prisma/migrations/*/migration.sql > /dev/null 2>&1; then
+            npx prisma migrate deploy
+          else
+            npx prisma db push
+          fi
+
+      - name: Print initial migration SQL (until prisma/migrations is committed)
+        if: hashFiles('prisma/migrations/**/migration.sql') == ''
+        continue-on-error: true
+        run: |
+          echo "-----BEGIN MIGRATION-----"
+          npx prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script
+          echo "-----END MIGRATION-----"
+
+      - name: Seed demo inventory (1,500 vehicles)
+        run: npm run db:seed
+
+      - run: npm run build
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npm run test:e2e
+        env:
+          E2E_SKIP_BUILD: "1"
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
