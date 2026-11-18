@@ -1,6 +1,6 @@
 import { serializeJsonLd } from "@/lib/seo";
 
 export function JsonLd({ data }: { data: unknown }) {
-  // eslint-disable-next-line react/no-danger -- serialized & escaped structured data
+  // serializeJsonLd escapes "<" so the payload cannot close the script tag.
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(data) }} />;
 }
