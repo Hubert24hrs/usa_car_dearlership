@@ -50,7 +50,7 @@ export const SITE = {
 
 /** Homepage hero artwork (AI-generated illustration via Higgsfield). Replace with the dealership's own photography. */
 export const HERO_IMAGE = {
-  src: "https://d8j0ntlcm91z4.cloudfront.net/user_3GrtJ9yvnCCLBYy0XGz3itnSm7n/hf_20261118_025455_373487a2-d708-455f-8847-c2553bf0c7ae.png",
+  src: "/hero-showroom.jpg",
   alt: "A modern dealership showroom at dusk with an electric SUV, a pickup truck and a sport sedan parked in front",
 } as const;
 
