@@ -196,8 +196,9 @@ Set `E2E_BASE_URL` to test an already-running server, or `E2E_SKIP_BUILD=1` to r
 2. **Import the repo** in Vercel. The `vercel-build` script runs `prisma generate && prisma migrate deploy && next build`, and `migrate deploy` only applies migrations that are committed. Run `npx prisma migrate dev --name init` locally once and commit `prisma/migrations/` before the first deploy.
 3. **Environment variables** — set at least `DATABASE_URL`, `AUTH_SECRET`, `NEXT_PUBLIC_SITE_URL`, `CRON_SECRET`. For production also: `RESEND_API_KEY` (verify your sending domain), `EMAIL_FROM`, `LEADS_NOTIFY_EMAIL`, `STORAGE_DRIVER=cloudinary` or `s3` (Vercel's filesystem is read-only), and `UPSTASH_REDIS_REST_*` for shared rate limits.
 4. **Seed** once from your machine against the production DB: `DATABASE_URL=… npx tsx prisma/seed.ts --no-demo` (admin user only). For a staging site with demo inventory, run the normal seed and set `SHOW_DEMO_INVENTORY=true`.
-5. **Crons** — [`vercel.json`](vercel.json) schedules feed sync and alerts daily (Hobby plan limit); increase frequency on Pro.
-6. Add your **real locations, dealer license number and policies** in Admin → Locations / Settings.
+5. **Custom domain (planned: `prestigeautosgroup.com`)**: in Vercel, open Project → Settings → Domains, add `prestigeautosgroup.com` and `www.prestigeautosgroup.com` (redirect one to the other), and create the DNS records Vercel shows at your registrar. Then set `NEXT_PUBLIC_SITE_URL=https://prestigeautosgroup.com` for Production and redeploy, which updates canonical links, the sitemap, share images and email links. Verify the domain in Resend before setting `EMAIL_FROM` / `LEADS_NOTIFY_EMAIL` to `@prestigeautosgroup.com` addresses, update the public email in Admin → Settings, and submit `https://prestigeautosgroup.com/sitemap.xml` in Google Search Console. Preview deployments are kept out of search engines automatically.
+6. **Crons** — [`vercel.json`](vercel.json) schedules feed sync and alerts daily (Hobby plan limit); increase frequency on Pro.
+7. Add your **real locations, dealer license number and policies** in Admin → Locations / Settings.
 
 ## Security, accessibility & performance
 

@@ -60,13 +60,24 @@ export function deliveryOffer(dealer: Pick<DealerProfile, "freeDeliveryMiles" | 
   };
 }
 
+/**
+ * Public site URL for canonical links, the sitemap, share images and emails.
+ * Set NEXT_PUBLIC_SITE_URL in production (planned domain: https://prestigeautosgroup.com).
+ * On Vercel without it, falls back to the project's production domain.
+ */
+function resolveSiteUrl(): string {
+  const vercelDomain = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
+  const url = process.env.NEXT_PUBLIC_SITE_URL || (vercelDomain ? `https://${vercelDomain}` : "http://localhost:3000");
+  return url.replace(/\/$/, "");
+}
+
 export const SITE = {
   name: DEFAULT_DEALER_PROFILE.name,
   shortName: "Prestige Auto",
   description:
     "Shop new, used and certified pre-owned EVs, hybrids, gas and diesel vehicles with transparent pricing, multi-point inspections, a no-pressure return window, free local delivery and discounted delivery to all 50 states.",
   locale: "en_US",
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+  url: resolveSiteUrl(),
   ogImage: "/opengraph-image",
   twitter: "@prestigeauto",
 } as const;
