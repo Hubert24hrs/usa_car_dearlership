@@ -1,0 +1,39 @@
+# One-off (manual) job: download the demo vehicle photos, compress them to
+# JPEGs in public/vehicles and commit them, so the site serves small local
+# images instead of large remote PNGs. Run from the Actions tab when needed.
+name: Optimize vehicle photos
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund --ignore-scripts
+
+      - name: Download and compress photos
+        run: node scripts/optimize-vehicle-images.mjs
+
+      - name: Commit optimized photos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add public/vehicles public/hero-showroom.jpg prisma/seed-data/vehicle-images.json lib/site.config.ts
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "Self-host compressed vehicle photos"
+            git push
+          fi
