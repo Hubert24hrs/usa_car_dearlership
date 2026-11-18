@@ -1,8 +1,10 @@
 /**
  * Prisma client singleton (Prisma 7 + node-postgres driver adapter).
  *
- * In development Next.js hot-reloads modules, so we cache the client on
- * globalThis to avoid exhausting database connections.
+ * The client is created lazily on first use, so importing this module never
+ * requires DATABASE_URL — unit tests and builds can import modules that use
+ * `prisma` without a database. It is cached on globalThis so Next.js hot reloads
+ * in development don't open a new connection pool on every change.
  */
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/lib/generated/prisma/client";
@@ -28,8 +30,20 @@ function createPrismaClient(): PrismaClient {
   });
 }
 
-export const prisma: PrismaClient = globalForPrisma.__prisma ?? createPrismaClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.__prisma = prisma;
+/** The shared client, created on the first call. */
+export function getPrisma(): PrismaClient {
+  globalForPrisma.__prisma ??= createPrismaClient();
+  return globalForPrisma.__prisma;
 }
+
+/**
+ * Lazy handle to the shared client: `prisma.vehicle`, `prisma.$transaction`, …
+ * are forwarded to the real client, which is only created when first accessed.
+ */
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, property) {
+    const client = getPrisma();
+    const value: unknown = Reflect.get(client, property, client);
+    return typeof value === "function" ? value.bind(client) : value;
+  },
+});
