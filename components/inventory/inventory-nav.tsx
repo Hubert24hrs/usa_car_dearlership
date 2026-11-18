@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { createContext, useCallback, useContext, useTransition } from "react";
+import { createContext, useCallback, useContext, useEffect, useTransition } from "react";
 import { buildInventoryHref, type InventoryFilters } from "@/lib/inventory/filters";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +28,13 @@ export function InventoryNavProvider({ filters, children }: { filters: Inventory
     },
     [router],
   );
+  // Signals that the filter controls are interactive (used by end-to-end tests).
+  useEffect(() => {
+    document.documentElement.dataset.inventoryReady = "true";
+    return () => {
+      delete document.documentElement.dataset.inventoryReady;
+    };
+  }, []);
   return <InventoryNavContext.Provider value={{ filters, isPending, navigate }}>{children}</InventoryNavContext.Provider>;
 }
 

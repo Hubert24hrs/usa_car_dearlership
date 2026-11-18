@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { inventoryReady } from "./helpers";
 
 async function resultCount(page: Page): Promise<number> {
   const text = await page.getByText(/of [\d,]+ vehicles|^0 vehicles$/).first().textContent();
@@ -9,6 +10,7 @@ async function resultCount(page: Page): Promise<number> {
 test.describe("filters", () => {
   test("selecting a fuel type uses an SEO URL, updates counts and can be cleared", async ({ page }) => {
     await page.goto("/inventory");
+    await inventoryReady(page);
     const total = await resultCount(page);
     expect(total).toBeGreaterThan(0);
 
@@ -48,7 +50,8 @@ test.describe("filters", () => {
 
   test("monthly budget chip applies a payment range", async ({ page }) => {
     await page.goto("/inventory");
-    await page.getByRole("complementary", { name: "Filters" }).getByRole("button", { name: "$350 to $500" }).click();
+    await inventoryReady(page);
+    await page.getByRole("complementary", { name: "Filters" }).getByRole("link", { name: "$350 to $500" }).click();
     await expect(page).toHaveURL(/monthly_min=350&monthly_max=500/);
     await expect(page.getByRole("button", { name: /Remove filter \$350 to \$500\/mo/ })).toBeVisible();
   });

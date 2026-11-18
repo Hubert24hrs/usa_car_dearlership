@@ -1,8 +1,10 @@
 import { expect, test } from "@playwright/test";
+import { inventoryReady } from "./helpers";
 
 test.describe("mobile", () => {
   test("bottom-sheet filters and sticky CTA bar", async ({ page }) => {
     await page.goto("/inventory");
+    await inventoryReady(page);
     await expect(page.getByRole("link", { name: "Shop inventory" })).toBeVisible();
     await page.getByRole("button", { name: /^Filters/ }).click();
     const sheet = page.getByRole("dialog");

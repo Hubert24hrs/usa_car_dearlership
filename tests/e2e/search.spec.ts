@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { inventoryReady } from "./helpers";
 
 test.describe("search", () => {
   test("homepage quick search shows a live count and lands on matching inventory", async ({ page }) => {
@@ -24,6 +25,7 @@ test.describe("search", () => {
 
   test("keyword search filters results and offers relevance sorting", async ({ page }) => {
     await page.goto("/inventory");
+    await inventoryReady(page);
     const box = page.getByRole("searchbox", { name: "Search inventory" }).or(page.getByLabel("Search inventory")).first();
     await box.fill("hybrid");
     await box.press("Enter");

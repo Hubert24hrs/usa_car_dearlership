@@ -1,6 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useId, useMemo, useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import {
+  buildInventoryHref,
   clearFilters,
   countActiveFilters,
   toggleListValue,
@@ -250,21 +252,25 @@ export function FiltersPanel({ facets, onApplied }: { facets: InventoryFacets; o
         <div className="flex flex-wrap gap-1.5">
           {MONTHLY_BUDGET_BANDS.map((band) => {
             const selected = filters.monthlyMin === band.min && filters.monthlyMax === band.max;
+            const next = withFilters(filters, selected ? { monthlyMin: undefined, monthlyMax: undefined } : { monthlyMin: band.min, monthlyMax: band.max });
+            // A real link: works before hydration and is crawlable; once hydrated it navigates in place.
             return (
-              <button
+              <Link
                 key={band.label}
-                type="button"
-                aria-pressed={selected}
-                onClick={() =>
-                  navigate(withFilters(filters, selected ? { monthlyMin: undefined, monthlyMax: undefined } : { monthlyMin: band.min, monthlyMax: band.max }))
-                }
+                href={buildInventoryHref(next)}
+                scroll={false}
+                aria-current={selected ? "true" : undefined}
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigate(next);
+                }}
                 className={cn(
                   "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
                   selected ? "border-primary bg-primary text-primary-foreground" : "hover:bg-accent",
                 )}
               >
                 {band.label}
-              </button>
+              </Link>
             );
           })}
         </div>
