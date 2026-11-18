@@ -42,7 +42,7 @@ const MONEY = new Set(["Price", "Est. monthly payment", "Down payment"]);
 
 function display(row: Row, v: PublicVehicleDetail) {
   const value = row.value(v);
-  if (value === null || value === undefined || value === "") return "—";
+  if (value === null || value === undefined || value === "") return "N/A";
   if (typeof value === "number") {
     if (MONEY.has(row.label)) return formatPrice(value);
     if (row.label === "Mileage") return `${formatNumber(value)} mi`;

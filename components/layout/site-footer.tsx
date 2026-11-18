@@ -14,7 +14,7 @@ export async function SiteFooter() {
         <div className="space-y-4 lg:col-span-2">
           <Logo />
           <p className="max-w-sm text-sm text-muted-foreground">
-            Transparent pricing on new, used and certified pre-owned electric, hybrid, gas and diesel vehicles — with
+            Transparent pricing on new, used and certified pre-owned electric, hybrid, gas and diesel vehicles, with
             home delivery and a no-pressure return window.
           </p>
           <address className="space-y-1 text-sm not-italic text-muted-foreground">

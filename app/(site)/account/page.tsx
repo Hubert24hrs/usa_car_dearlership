@@ -23,7 +23,7 @@ export default async function AccountPage({ searchParams }: Props) {
       )}
       <div className="mt-6 space-y-2 rounded-2xl border bg-card p-6">
         <p>
-          <span className="text-muted-foreground">Name:</span> {session.user.name ?? "—"}
+          <span className="text-muted-foreground">Name:</span> {session.user.name ?? "Not set"}
         </p>
         <p>
           <span className="text-muted-foreground">Email:</span> {session.user.email}

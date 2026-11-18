@@ -29,7 +29,7 @@ export default async function ServicePage() {
         eyebrow="Service center"
         title="Service that fits your schedule"
         crumbs={[{ name: "Service", href: "/service" }]}
-        description="Certified technicians for gas, diesel, hybrid and electric vehicles — with loaners, shuttle and pickup & delivery."
+        description="Certified technicians for gas, diesel, hybrid and electric vehicles, with loaners, a shuttle and pickup & delivery."
       />
       <div className="container-page grid gap-8 py-12 lg:grid-cols-[1fr_360px]">
         <section aria-labelledby="service-form" className="rounded-2xl border bg-card p-6 shadow-soft md:p-8">
@@ -49,7 +49,7 @@ export default async function ServicePage() {
                 {l.serviceHours.map((h) => (
                   <li key={h.day} className="flex justify-between">
                     <span>{h.day}</span>
-                    <span>{h.open ? `${formatHour(h.open)} – ${formatHour(h.close)}` : "Closed"}</span>
+                    <span>{h.open ? `${formatHour(h.open)} to ${formatHour(h.close)}` : "Closed"}</span>
                   </li>
                 ))}
               </ul>
@@ -69,7 +69,7 @@ export default async function ServicePage() {
           ))}
         </div>
         <p className="mt-4 text-xs text-muted-foreground">
-          Placeholder offers — set real pricing, eligible vehicles and expiration dates before publishing. Cannot be combined
+          Placeholder offers. Set real pricing, eligible vehicles and expiration dates before publishing. Cannot be combined
           with other offers. Present at write-up.
         </p>
       </Section>

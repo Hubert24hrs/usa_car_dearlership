@@ -55,7 +55,7 @@ export default async function ImportPage() {
                     {j.dryRun && " (dry run)"}
                   </td>
                   <td className="max-w-56 truncate p-3" title={j.fileName ?? ""}>
-                    {j.fileName ?? "—"}
+                    {j.fileName ?? "N/A"}
                   </td>
                   <td className="p-3">{j.status}</td>
                   <td className="p-3 tabular-nums">{j.totalRows}</td>
@@ -63,7 +63,7 @@ export default async function ImportPage() {
                   <td className="p-3 tabular-nums">{j.updated}</td>
                   <td className="p-3 tabular-nums">{j.failed}</td>
                   <td className="p-3 tabular-nums">{j.markedSold}</td>
-                  <td className="p-3 text-muted-foreground">{j.triggeredBy ?? "—"}</td>
+                  <td className="p-3 text-muted-foreground">{j.triggeredBy ?? "N/A"}</td>
                 </tr>
               ))}
               {jobs.length === 0 && (

@@ -73,7 +73,7 @@ export async function decodeVin(input: string): Promise<DecodeResult> {
 
 export async function lookupPlate(_plate: string, _state: string): Promise<DecodeResult> {
   if (!process.env.PLATE_LOOKUP_PROVIDER) {
-    return { ok: false, error: "License plate lookup isn't available yet — please use your VIN or enter the details." };
+    return { ok: false, error: "License plate lookup isn't available yet. Please use your VIN or enter the details." };
   }
   // Integrate your licensed plate-to-VIN provider here.
   return { ok: false, error: "Plate lookup provider is not implemented." };
@@ -115,7 +115,7 @@ export async function getTradeInEstimate(input: unknown): Promise<TradeInEstimat
     take: 50,
   });
   if (comps.length === 0) {
-    return { ok: false, error: "We need to take a closer look — submit the form and an appraiser will send your offer." };
+    return { ok: false, error: "We need to take a closer look. Submit the form and an appraiser will send your offer." };
   }
 
   const values = comps.map((c) => {

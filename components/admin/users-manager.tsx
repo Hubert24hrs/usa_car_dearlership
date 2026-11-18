@@ -82,7 +82,7 @@ export function UsersManager({ users, currentUserId }: { users: Row[]; currentUs
             {users.map((u) => (
               <tr key={u.id}>
                 <td className="p-3">
-                  <p className="font-medium">{u.name ?? "—"}</p>
+                  <p className="font-medium">{u.name ?? "No name"}</p>
                   <p className="text-xs text-muted-foreground">{u.email}</p>
                 </td>
                 <td className="p-3">

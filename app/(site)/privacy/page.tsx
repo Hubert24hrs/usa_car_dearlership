@@ -9,7 +9,7 @@ export default async function PrivacyPage() {
   const dealer = await cachedDealerProfile();
   return (
     <>
-      <PageHeader title="Privacy policy" crumbs={[{ name: "Privacy", href: "/privacy" }]} description="Template — have counsel review and customize before launch." />
+      <PageHeader title="Privacy policy" crumbs={[{ name: "Privacy", href: "/privacy" }]} description="Template. Have counsel review and customize it before launch." />
       <div className="container-page py-12">
         <article className="prose-legal">
           <p>
@@ -22,7 +22,7 @@ export default async function PrivacyPage() {
             <li>Vehicle interests, saved vehicles and saved searches.</li>
             <li>Financing information you choose to submit for pre-qualification (we do not request Social Security numbers to pre-qualify).</li>
             <li>Trade-in details (VIN, mileage, condition).</li>
-            <li>Device and usage data (pages viewed, approximate location) via cookies and analytics — only with your consent for optional cookies.</li>
+            <li>Device and usage data (pages viewed, approximate location) via cookies and analytics, only with your consent for optional cookies.</li>
           </ul>
           <h2>How we use information</h2>
           <ul>
@@ -35,7 +35,7 @@ export default async function PrivacyPage() {
           <p>
             We share information with service providers that help us operate (hosting, email delivery, analytics), lenders you ask
             us to submit to, and manufacturers for warranty and recall purposes. We do not sell personal information for money.
-            Some advertising cookies may be considered “sharing” under California law — you can opt out at any time.
+            Some advertising cookies may be considered “sharing” under California law. You can opt out at any time.
           </p>
           <h2 id="ccpa">California privacy rights (CCPA/CPRA)</h2>
           <p>

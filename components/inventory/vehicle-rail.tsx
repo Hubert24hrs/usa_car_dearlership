@@ -25,7 +25,7 @@ export async function VehicleRail({
     }),
     cachedFinanceAssumptions(),
   ]);
-  if (rows.length === 0) return <p className="text-muted-foreground">No vehicles available right now — check back soon.</p>;
+  if (rows.length === 0) return <p className="text-muted-foreground">No vehicles available right now. Check back soon.</p>;
   return (
     <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {rows.map((row) => (

@@ -67,7 +67,7 @@ export async function saveVehicle(record: Record<string, unknown>, existingId?: 
     } else {
       const vin = String(record.vin ?? "").trim().toUpperCase();
       if (vin && (await prisma.vehicle.findUnique({ where: { vin }, select: { id: true } }))) {
-        return { ok: false, error: "A vehicle with this VIN already exists — edit it instead." };
+        return { ok: false, error: "A vehicle with this VIN already exists. Edit it instead." };
       }
     }
     const summary = await runImport([record], { source: "MANUAL", sourceRef: "manual", skipJobLog: true, triggeredBy: user.email });

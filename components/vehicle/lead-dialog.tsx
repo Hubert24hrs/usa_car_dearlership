@@ -29,7 +29,7 @@ const COPY: Record<LeadDialogKind, { title: string; description: string; cta: st
   },
   "test-drive": {
     title: "Schedule a test drive",
-    description: "Pick a time — we'll have it cleaned, charged/fueled and ready.",
+    description: "Pick a time and we'll have it cleaned, charged or fueled, and ready.",
     cta: "Schedule test drive",
   },
   text: {
@@ -70,7 +70,7 @@ export function LeadDialog({
         <DialogHeader>
           <DialogTitle>{copy.title}</DialogTitle>
           <DialogDescription>
-            {vehicle.title} — {copy.description}
+            {vehicle.title}. {copy.description}
           </DialogDescription>
         </DialogHeader>
         {open && kind === "availability" && <AvailabilityForm vehicle={vehicle} />}

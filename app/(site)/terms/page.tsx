@@ -9,7 +9,7 @@ export default async function TermsPage() {
   const [dealer, finance] = await Promise.all([cachedDealerProfile(), cachedFinanceAssumptions()]);
   return (
     <>
-      <PageHeader title="Terms of use" crumbs={[{ name: "Terms", href: "/terms" }]} description="Template — have counsel review and customize before launch." />
+      <PageHeader title="Terms of use" crumbs={[{ name: "Terms", href: "/terms" }]} description="Template. Have counsel review and customize it before launch." />
       <div className="container-page py-12">
         <article className="prose-legal">
           <h2>Use of this site</h2>

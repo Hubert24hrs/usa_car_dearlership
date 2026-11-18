@@ -7,7 +7,7 @@ import { smsHref, telHref } from "@/lib/site.config";
 
 export const metadata: Metadata = {
   title: "Contact us",
-  description: "Call, text, chat or send us a message — our team typically replies within one business hour.",
+  description: "Call, text, chat or send us a message. Our team typically replies within one business hour.",
   alternates: { canonical: "/contact" },
 };
 

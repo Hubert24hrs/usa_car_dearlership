@@ -62,14 +62,14 @@ export default async function AdminDashboard({ searchParams }: Props) {
       )}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatTile label="Vehicles in stock" value={formatNumber((status.AVAILABLE ?? 0) + (status.PENDING ?? 0))} hint={`${formatNumber(status.PENDING ?? 0)} pending · ${formatNumber(status.SOLD ?? 0)} sold · ${formatNumber(total)} total`} />
-        <StatTile label="Average listed price" value={priceAgg._avg.displayPrice ? formatPrice(Number(priceAgg._avg.displayPrice)) : "—"} hint={priceAgg._avg.mileage ? `Avg. ${formatNumber(Math.round(priceAgg._avg.mileage))} mi` : undefined} />
+        <StatTile label="Average listed price" value={priceAgg._avg.displayPrice ? formatPrice(Number(priceAgg._avg.displayPrice)) : "N/A"} hint={priceAgg._avg.mileage ? `Avg. ${formatNumber(Math.round(priceAgg._avg.mileage))} mi` : undefined} />
         <StatTile label="Leads (30 days)" value={formatNumber(leads30)} hint={`${formatNumber(leadsNew)} awaiting first contact`} />
-        <StatTile label="Most viewed" value={topViewed[0] ? `${formatNumber(topViewed[0].viewCount)} views` : "—"} hint={topViewed[0] ? vehicleTitle(topViewed[0]) : undefined} />
+        <StatTile label="Most viewed" value={topViewed[0] ? `${formatNumber(topViewed[0].viewCount)} views` : "No views yet"} hint={topViewed[0] ? vehicleTitle(topViewed[0]) : undefined} />
       </div>
       <div className="grid gap-4 xl:grid-cols-2">
-        <DailyColumns title="Leads per day — last 14 days" days={days} />
+        <DailyColumns title="Leads per day, last 14 days" days={days} />
         <BarList
-          title="Leads by type — last 30 days"
+          title="Leads by type, last 30 days"
           rows={leadsByType.map((l) => ({ label: LEAD_TYPE_LABELS[l.type], value: l._count._all })).sort((a, b) => b.value - a.value)}
         />
         <BarList
@@ -108,7 +108,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
           {imports.map((job) => (
             <li key={job.id} className="flex flex-wrap justify-between gap-2 py-2">
               <span>
-                {job.source} · {job.fileName ?? "—"} {job.dryRun && "(dry run)"}
+                {job.source} · {job.fileName ?? "N/A"} {job.dryRun && "(dry run)"}
               </span>
               <span className="text-muted-foreground">
                 {job.status} · {job.created} new · {job.updated} updated · {job.failed} failed · {formatDate(job.startedAt, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}

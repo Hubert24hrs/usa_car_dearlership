@@ -266,7 +266,7 @@ export function prepareRecords(records: Record<string, unknown>[], ctx: PrepareC
       duplicates.push({
         row: existing.row,
         vin: existing.data.vin,
-        message: `Duplicate VIN — row ${existing.row} superseded by row ${row}`,
+        message: `Duplicate VIN: row ${existing.row} superseded by row ${row}`,
       });
     }
     byVin.set(result.vehicle.data.vin, result.vehicle);

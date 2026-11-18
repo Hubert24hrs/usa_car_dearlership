@@ -17,7 +17,7 @@ const week = (open: string | null, close: string | null, sat: [string, string] |
 export const DEMO_LOCATIONS = [
   {
     slug: "austin",
-    name: "Prestige Auto Group — Austin",
+    name: "Prestige Auto Group Austin",
     address1: "100 Showroom Way",
     city: "Austin",
     state: "TX",
@@ -34,7 +34,7 @@ export const DEMO_LOCATIONS = [
   },
   {
     slug: "dallas",
-    name: "Prestige Auto Group — Dallas",
+    name: "Prestige Auto Group Dallas",
     address1: "2500 Motorway Blvd",
     city: "Dallas",
     state: "TX",
@@ -51,7 +51,7 @@ export const DEMO_LOCATIONS = [
   },
   {
     slug: "san-antonio-ev",
-    name: "Prestige EV & Hybrid Center — San Antonio",
+    name: "Prestige EV & Hybrid Center San Antonio",
     address1: "800 Charge Point Ave",
     city: "San Antonio",
     state: "TX",

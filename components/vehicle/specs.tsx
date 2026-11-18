@@ -9,8 +9,8 @@ export function KeySpecs({ vehicle: v }: { vehicle: PublicVehicleDetail }) {
     { icon: Gauge, label: "Mileage", value: `${formatNumber(v.mileage)} mi` },
     { icon: Car, label: "Body style", value: bodyLabel(v.bodyStyle) },
     { icon: Fuel, label: "Fuel type", value: fuelLabel(v.fuelType) },
-    { icon: Cog, label: "Engine", value: v.engine || "—" },
-    { icon: Cog, label: "Transmission", value: v.transmission || "—" },
+    { icon: Cog, label: "Engine", value: v.engine || "N/A" },
+    { icon: Cog, label: "Transmission", value: v.transmission || "N/A" },
     { icon: Route, label: "Drivetrain", value: drivetrainLabel(v.drivetrain, false) },
     { icon: Palette, label: "Exterior", value: v.exteriorColor },
     { icon: Droplet, label: "Interior", value: v.interiorColor },
@@ -44,11 +44,11 @@ export function EvBlock({ vehicle: v }: { vehicle: PublicVehicleDetail }) {
   const isEv = v.fuelType === "ELECTRIC";
   const level2Hours = v.evBatteryKwh ? Math.ceil((v.evBatteryKwh * 0.9) / 9.6) : null; // ~40A home charger
   const items = [
-    { icon: Route, label: isEv ? "EPA-est. range" : "Electric-only range", value: v.evRangeMiles ? `${v.evRangeMiles} mi` : "—" },
-    { icon: BatteryCharging, label: "Battery", value: v.evBatteryKwh ? `${v.evBatteryKwh} kWh` : "—" },
-    ...(isEv ? [{ icon: Zap, label: "DC fast charge (10–80%)", value: v.evDcFastChargeMin ? `~${v.evDcFastChargeMin} min` : "—" }] : []),
-    { icon: Timer, label: "Level 2 home charging", value: level2Hours ? `~${level2Hours} hrs (empty to full)` : "—" },
-    ...(isEv ? [{ icon: PlugZap, label: "Charge port", value: v.evChargePort === "NACS" ? "NACS (J3400)" : v.evChargePort === "CCS" ? "CCS1" : "—" }] : []),
+    { icon: Route, label: isEv ? "EPA-est. range" : "Electric-only range", value: v.evRangeMiles ? `${v.evRangeMiles} mi` : "N/A" },
+    { icon: BatteryCharging, label: "Battery", value: v.evBatteryKwh ? `${v.evBatteryKwh} kWh` : "N/A" },
+    ...(isEv ? [{ icon: Zap, label: "DC fast charge (10% to 80%)", value: v.evDcFastChargeMin ? `~${v.evDcFastChargeMin} min` : "N/A" }] : []),
+    { icon: Timer, label: "Level 2 home charging", value: level2Hours ? `~${level2Hours} hrs (empty to full)` : "N/A" },
+    ...(isEv ? [{ icon: PlugZap, label: "Charge port", value: v.evChargePort === "NACS" ? "NACS (J3400)" : v.evChargePort === "CCS" ? "CCS1" : "N/A" }] : []),
   ];
   return (
     <section aria-labelledby="ev-specs" className="rounded-2xl border border-ev/30 bg-ev-soft p-5 md:p-6">
@@ -104,7 +104,7 @@ export function MpgBlock({ vehicle: v }: { vehicle: PublicVehicleDetail }) {
       <dl className="grid grid-cols-3 gap-3 text-center">
         {rows.map((r) => (
           <div key={r.label} className="rounded-xl bg-muted/60 p-3">
-            <dd className="font-heading text-2xl font-bold">{r.value ?? "—"}</dd>
+            <dd className="font-heading text-2xl font-bold">{r.value ?? "N/A"}</dd>
             <dt className="text-xs text-muted-foreground">{r.label} MPG</dt>
           </div>
         ))}

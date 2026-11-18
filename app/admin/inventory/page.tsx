@@ -177,7 +177,7 @@ export default async function AdminInventoryPage({ searchParams }: Props) {
                     <br />
                     <span className="text-xs text-muted-foreground">{formatPrice(Number(v.displayMonthlyPayment))}/mo</span>
                   </td>
-                  {showBase && <td className="p-3 tabular-nums text-muted-foreground">{v.basePrice ? formatPrice(Number(v.basePrice)) : "—"}</td>}
+                  {showBase && <td className="p-3 tabular-nums text-muted-foreground">{v.basePrice ? formatPrice(Number(v.basePrice)) : "N/A"}</td>}
                   <td className="p-3 tabular-nums">{formatNumber(v.mileage)}</td>
                   <td className="p-3 text-muted-foreground">{v.location.name}</td>
                   <td className="p-3 tabular-nums">{formatNumber(v.viewCount)}</td>

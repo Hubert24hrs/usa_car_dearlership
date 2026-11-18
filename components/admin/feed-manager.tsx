@@ -80,7 +80,7 @@ function FeedEditor({ feed, locations, onDone }: { feed?: Feed; locations: { id:
       <div className="space-y-1.5">
         <Label htmlFor="feed-auth">Credential env var (optional)</Label>
         <Input id="feed-auth" placeholder="HOMENET_FEED_TOKEN" value={v.authEnvVar} onChange={(e) => setV({ ...v, authEnvVar: e.target.value.toUpperCase() })} />
-        <p className="text-xs text-muted-foreground">Store the secret in an environment variable — never in the database.</p>
+        <p className="text-xs text-muted-foreground">Store the secret in an environment variable, never in the database.</p>
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="feed-location">Default location</Label>
@@ -142,7 +142,7 @@ export function FeedManager({ feeds, locations }: { feeds: Feed[]; locations: { 
                 <p className="mt-1 text-sm">
                   {feed.lastRunAt ? (
                     <>
-                      Last run {formatDate(feed.lastRunAt, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} —{" "}
+                      Last run {formatDate(feed.lastRunAt, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}:{" "}
                       <span className={feed.lastStatus === "FAILED" ? "font-medium text-destructive" : "font-medium"}>{feed.lastStatus}</span>
                       {feed.lastMessage && <span className="text-muted-foreground"> · {feed.lastMessage}</span>}
                     </>

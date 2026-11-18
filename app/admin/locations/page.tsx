@@ -42,7 +42,7 @@ export default async function AdminLocationsPage() {
       {locations.map((l) => (
         <div key={l.id} className="space-y-2">
           <h2 className="font-semibold">
-            {l.name} {l.isDemo && <span className="ml-2 rounded bg-amber-100 px-1.5 text-xs text-amber-900">demo — replace with real details</span>}
+            {l.name} {l.isDemo && <span className="ml-2 rounded bg-amber-100 px-1.5 text-xs text-amber-900">demo, replace with real details</span>}
           </h2>
           <LocationForm id={l.id} initial={toValues(l)} />
         </div>

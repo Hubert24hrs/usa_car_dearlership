@@ -12,7 +12,7 @@ const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap"
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name} — New, Used, Electric & Hybrid Vehicles`,
+    default: `${SITE.name} | New, Used, Electric & Hybrid Vehicles`,
     template: `%s | ${SITE.name}`,
   },
   description: SITE.description,

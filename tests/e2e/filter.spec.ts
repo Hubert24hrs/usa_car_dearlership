@@ -48,8 +48,8 @@ test.describe("filters", () => {
 
   test("monthly budget chip applies a payment range", async ({ page }) => {
     await page.goto("/inventory");
-    await page.getByRole("complementary", { name: "Filters" }).getByRole("button", { name: "$350 – $500" }).click();
+    await page.getByRole("complementary", { name: "Filters" }).getByRole("button", { name: "$350 to $500" }).click();
     await expect(page).toHaveURL(/monthly_min=350&monthly_max=500/);
-    await expect(page.getByRole("button", { name: /Remove filter \$350 – \$500\/mo/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Remove filter \$350 to \$500\/mo/ })).toBeVisible();
   });
 });

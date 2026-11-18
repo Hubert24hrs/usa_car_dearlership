@@ -151,7 +151,7 @@ export function FinanceCalculator({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor={`${id}-tax`}>Sales tax (%) — optional</Label>
+              <Label htmlFor={`${id}-tax`}>Sales tax % (optional)</Label>
               <Input
                 id={`${id}-tax`}
                 type="number"
@@ -201,7 +201,7 @@ export function FinanceCalculator({
             href="/finance#prequalify"
             className="inline-flex items-center justify-center rounded-xl bg-cta px-4 py-2.5 text-sm font-semibold text-cta-foreground hover:bg-cta-hover"
           >
-            Get pre-qualified — no credit impact
+            Get pre-qualified with no credit impact
           </Link>
         </div>
       </div>

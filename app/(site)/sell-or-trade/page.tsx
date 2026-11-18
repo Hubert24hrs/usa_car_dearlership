@@ -4,7 +4,7 @@ import { TradeInForm } from "@/components/forms/trade-in-form";
 import { PageHeader } from "@/components/layout/page-header";
 
 export const metadata: Metadata = {
-  title: "Sell or trade in your car — instant estimate",
+  title: "Sell or trade in your car with an instant estimate",
   description: "Get an instant trade-in estimate with your VIN or year, make and model. Sell your car outright or apply the value to your next vehicle.",
   alternates: { canonical: "/sell-or-trade" },
 };
@@ -21,7 +21,7 @@ export default async function SellOrTradePage({ searchParams }: Props) {
         eyebrow="Sell or trade"
         title="Get a real offer for your car"
         crumbs={[{ name: "Sell or trade", href: "/sell-or-trade" }]}
-        description="Look up your vehicle by VIN or plate, get an instant estimate, and we'll confirm a firm offer — even if you don't buy from us."
+        description="Look up your vehicle by VIN or plate, get an instant estimate, and we'll confirm a firm offer, even if you don't buy from us."
       />
       <div className="container-page grid gap-8 py-12 lg:grid-cols-[1fr_360px]">
         <section aria-label="Trade-in appraisal form" className="rounded-2xl border bg-card p-6 shadow-soft md:p-8">

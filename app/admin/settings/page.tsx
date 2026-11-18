@@ -20,7 +20,7 @@ export default async function SettingsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold">Settings & pricing</h1>
-        <p className="text-sm text-muted-foreground">Changes apply immediately — no redeploy required.</p>
+        <p className="text-sm text-muted-foreground">Changes apply immediately. No redeploy required.</p>
       </div>
 
       <section className="space-y-4 rounded-2xl border bg-card p-6" aria-labelledby="pricing-heading">
@@ -36,7 +36,7 @@ export default async function SettingsPage() {
           <AlertTriangle className="size-4 shrink-0" aria-hidden="true" />
           Compliance note: when the monthly multiplier differs from the price multiplier, the advertised payment may not equal the payment
           implied by the advertised price, APR and term. Truth-in-Lending advertising rules (Reg Z / Reg M) and state law require advertised
-          payment terms to be accurate — have counsel review before launch.
+          payment terms to be accurate. Have counsel review before launch.
         </p>
         <PricingSettingsForm initial={{ ...multipliers, ...finance }} />
       </section>

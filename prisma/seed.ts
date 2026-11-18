@@ -172,7 +172,7 @@ function description(entry: CatalogEntry, condition: Condition, year: number, tr
     `${intro[condition]} finished in ${color}.`,
     highlights.length ? `Highlights include ${highlights.join(", ").toLowerCase()}.` : "",
     condition === "CPO" ? "Includes the manufacturer certified pre-owned warranty and a multi-point inspection." : "",
-    "Demo listing — placeholder data for development only.",
+    "Demo listing with placeholder data for development only.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -184,7 +184,7 @@ async function seedAdmin() {
   const email = process.env.SEED_ADMIN_EMAIL?.toLowerCase().trim();
   const password = process.env.SEED_ADMIN_PASSWORD;
   if (!email || !password || password.startsWith("change-me")) {
-    console.warn("[seed] SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD not set (or still the placeholder) — skipping admin user.");
+    console.warn("[seed] SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD not set (or still the placeholder); skipping admin user.");
     return;
   }
   const passwordHash = await bcrypt.hash(password, 12);

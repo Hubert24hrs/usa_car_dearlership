@@ -10,7 +10,7 @@ import { telHref } from "@/lib/site.config";
 export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Locations, hours & directions",
-  description: "Find a Prestige Auto Group store near you — sales and service hours, phone numbers and directions.",
+  description: "Find a Prestige Auto Group store near you, with sales and service hours, phone numbers and directions.",
   alternates: { canonical: "/locations" },
 };
 
@@ -18,7 +18,7 @@ export default async function LocationsPage() {
   const locations = await cachedLocations();
   return (
     <>
-      <PageHeader title="Locations & hours" crumbs={[{ name: "Locations", href: "/locations" }]} description="Visit any of our stores — or shop online and we'll deliver to you." />
+      <PageHeader title="Locations & hours" crumbs={[{ name: "Locations", href: "/locations" }]} description="Visit any of our stores, or shop online and we'll deliver to you." />
       <div className="container-page space-y-12 py-12">
         <LocationsMap locations={locations} />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -45,7 +45,7 @@ export default async function LocationsPage() {
                       {group.hours.map((h) => (
                         <li key={h.day} className="flex justify-between gap-2">
                           <span>{h.day}</span>
-                          <span className="tabular-nums">{h.open ? `${formatHour(h.open)}–${formatHour(h.close)}` : "Closed"}</span>
+                          <span className="tabular-nums">{h.open ? `${formatHour(h.open)} to ${formatHour(h.close)}` : "Closed"}</span>
                         </li>
                       ))}
                     </ul>

@@ -72,7 +72,7 @@ export function LocationsMap({ locations }: { locations: PublicLocation[] }) {
           <div className="text-sm">
             <p className="font-semibold">{loc.name}</p>
             <p className="text-muted-foreground">
-              Today: {todayHours?.open ? `${formatHour(todayHours.open)} – ${formatHour(todayHours.close)}` : "Closed"}
+              Today: {todayHours?.open ? `${formatHour(todayHours.open)} to ${formatHour(todayHours.close)}` : "Closed"}
             </p>
           </div>
           <div className="flex gap-2">

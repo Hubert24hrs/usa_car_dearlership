@@ -16,7 +16,7 @@ export const LEAD_TYPE_LABELS = {
 
 export type LeadTypeValue = keyof typeof LEAD_TYPE_LABELS;
 
-export const TIME_SLOTS = ["Morning (9–12)", "Afternoon (12–4)", "Evening (4–7)"] as const;
+export const TIME_SLOTS = ["Morning (9am to 12pm)", "Afternoon (12pm to 4pm)", "Evening (4pm to 7pm)"] as const;
 
 export const SERVICE_TYPES = [
   "Oil & filter change",

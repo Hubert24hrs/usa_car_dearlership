@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const VALUES = [
   { icon: Scale, title: "Honest pricing", text: "One clear price online and in store. Estimated payments disclose the term, APR and down payment used." },
-  { icon: HeartHandshake, title: "No-pressure guidance", text: "Product specialists, not commission-driven pressure — take the time you need." },
+  { icon: HeartHandshake, title: "No-pressure guidance", text: "Product specialists, not commission-driven pressure. Take the time you need." },
   { icon: Leaf, title: "Electrified expertise", text: "EV-certified technicians and staff who can explain charging, range and incentives." },
   { icon: Users, title: "Community first", text: "We sponsor youth sports, school STEM programs and local food banks." },
 ];
@@ -59,7 +59,7 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-        <p className="mt-4 text-xs text-muted-foreground">Placeholder team section — add real staff names and photos with their consent.</p>
+        <p className="mt-4 text-xs text-muted-foreground">Placeholder team section. Add real staff names and photos with their consent.</p>
       </Section>
       <Section id="community" eyebrow="Community" title="Giving back" className="pt-0 md:pt-0">
         <p className="max-w-3xl text-muted-foreground">

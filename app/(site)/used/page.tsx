@@ -31,7 +31,7 @@ export default async function UsedVehiclesPage() {
         eyebrow="Used & certified"
         title="Pre-owned vehicles you can trust"
         crumbs={[{ name: "Used vehicles", href: "/used" }]}
-        description={`${formatNumber(used)} inspected used and certified pre-owned vehicles — every one with a history report and an estimated payment.`}
+        description={`${formatNumber(used)} inspected used and certified pre-owned vehicles, every one with a history report and an estimated payment.`}
       >
         <div className="mt-6 flex flex-wrap gap-3">
           <Button asChild size="lg" className="bg-cta text-cta-foreground hover:bg-cta-hover">
@@ -61,7 +61,7 @@ export default async function UsedVehiclesPage() {
           </h3>
           <p className="mt-2 text-sm text-muted-foreground">
             Manufacturer CPO vehicles meet the brand&apos;s age and mileage limits, pass the factory inspection and include
-            extended warranty coverage. Coverage varies by manufacturer — see each listing or ask us for details.
+            extended warranty coverage. Coverage varies by manufacturer, so see each listing or ask us for details.
           </p>
         </div>
       </Section>

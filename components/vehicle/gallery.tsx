@@ -118,7 +118,7 @@ export function Gallery({
             <button type="button" className="absolute inset-0 cursor-zoom-in" onClick={() => setFullscreen(true)} aria-label="Open fullscreen gallery">
               <VehicleImage
                 src={images[index]!}
-                alt={`${title} — photo ${index + 1} of ${count}`}
+                alt={`${title}, photo ${index + 1} of ${count}`}
                 fill
                 priority={index === 0}
                 sizes="(min-width: 1024px) 66vw, 100vw"
@@ -188,7 +188,7 @@ export function Gallery({
           >
             <VehicleImage
               src={images[index]!}
-              alt={`${title} — photo ${index + 1} of ${count}`}
+              alt={`${title}, photo ${index + 1} of ${count}`}
               fill
               sizes="96vw"
               className="object-contain transition-transform duration-200"

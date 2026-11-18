@@ -156,7 +156,7 @@ export function TradeInForm({ vehicleId }: { vehicleId?: string }) {
               <NativeSelect {...p} {...form.register("details.condition")}>
                 {CONDITIONS.map((c) => (
                   <option key={c.value} value={c.value}>
-                    {c.label} — {c.hint}
+                    {c.label}: {c.hint}
                   </option>
                 ))}
               </NativeSelect>
@@ -185,10 +185,10 @@ export function TradeInForm({ vehicleId }: { vehicleId?: string }) {
           <div role="status" className="rounded-2xl border border-ev/30 bg-ev-soft p-4">
             <p className="text-sm text-muted-foreground">Preliminary trade-in estimate</p>
             <p className="font-heading text-3xl font-bold">
-              {formatPrice(estimate.low)} – {formatPrice(estimate.high)}
+              {formatPrice(estimate.low)} to {formatPrice(estimate.high)}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Based on {estimate.comps} comparable vehicles in our inventory. Not a guaranteed offer — final value depends on
+              Based on {estimate.comps} comparable vehicles in our inventory. Not a guaranteed offer. Final value depends on
               inspection, history and market conditions.
             </p>
           </div>

@@ -14,4 +14,4 @@ export const PREQUAL_CONSENT_TEXT =
   "I authorize the dealership and its lending partners to review the information I provide to determine pre-qualification. A pre-qualification request does not affect my credit score. Final approval may require a full credit application.";
 
 export const DEMO_IMAGE_NOTICE =
-  "Demo listing — AI-generated illustrative photo and placeholder vehicle data for development only. Not an actual vehicle for sale.";
+  "Demo listing: AI-generated illustrative photo and placeholder vehicle data for development only. Not an actual vehicle for sale.";

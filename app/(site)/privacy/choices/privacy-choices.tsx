@@ -24,7 +24,7 @@ export function PrivacyChoices() {
       </p>
       {gpc && (
         <p className="mb-4 flex items-center gap-2 rounded-xl bg-ev-soft p-3 text-sm text-ev-strong">
-          <ShieldCheck className="size-4" aria-hidden="true" /> Global Privacy Control detected — you are opted out automatically.
+          <ShieldCheck className="size-4" aria-hidden="true" /> Global Privacy Control detected. You are opted out automatically.
         </p>
       )}
       <div className="flex items-center justify-between gap-4 rounded-xl bg-muted/60 p-4">

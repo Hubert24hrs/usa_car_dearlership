@@ -62,9 +62,9 @@ export function PricingSettingsForm({
         <NumberField id="f-term" label="Disclosed term (months)" step="1" value={v.termMonths} onChange={(n) => setV({ ...v, termMonths: n })} />
         <NumberField id="f-apr" label="Disclosed APR (%)" value={v.aprPercent} onChange={(n) => setV({ ...v, aprPercent: n })} />
       </div>
-      <p className="text-xs text-muted-foreground">Allowed multiplier range: {min} – {max}.</p>
+      <p className="text-xs text-muted-foreground">Allowed multiplier range: {min} to {max}.</p>
       <div className="rounded-xl bg-muted/60 p-4 text-sm">
-        <p className="font-medium">Preview — feed values $25,000 / $2,500 down / $400 mo become:</p>
+        <p className="font-medium">Preview: feed values of $25,000 / $2,500 down / $400 a month become:</p>
         {preview ? (
           <p className="mt-1 tabular-nums">
             {formatPrice(preview.displayPrice)} · {formatPrice(preview.displayDownPayment)} down · {formatPrice(preview.displayMonthlyPayment)}/mo

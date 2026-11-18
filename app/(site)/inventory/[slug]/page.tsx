@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const v = await cachedVehicleBySlug(slug.toLowerCase());
   if (!v) return { title: "Vehicle not found", robots: { index: false } };
-  const title = `${vehicleTitle(v)} for sale — ${formatPrice(v.displayPrice)}`;
+  const title = `${vehicleTitle(v)} for sale at ${formatPrice(v.displayPrice)}`;
   const description = `${vehicleTitle(v)} · ${formatMileage(v.mileage)} · ${fuelLabel(v.fuelType)} ${bodyLabel(v.bodyStyle)} · ${v.exteriorColor}. Est. ${formatPrice(v.displayMonthlyPayment)}/mo. Located in ${v.location.city}, ${v.location.state}.`;
   return {
     title,
@@ -213,7 +213,7 @@ export default async function VehiclePage({ params }: Props) {
               {vehicle.location.salesHours.map((h) => (
                 <li key={h.day} className="flex justify-between gap-2">
                   <span>{h.day}</span>
-                  <span>{h.open ? `${formatHour(h.open)}–${formatHour(h.close)}` : "Closed"}</span>
+                  <span>{h.open ? `${formatHour(h.open)} to ${formatHour(h.close)}` : "Closed"}</span>
                 </li>
               ))}
             </ul>

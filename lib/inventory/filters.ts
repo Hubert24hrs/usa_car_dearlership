@@ -376,7 +376,7 @@ export type ChipLabels = {
 const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
 
 function rangeLabel(min: number | undefined, max: number | undefined, fmt: (n: number) => string, suffix = "") {
-  if (min !== undefined && max !== undefined) return `${fmt(min)} – ${fmt(max)}${suffix}`;
+  if (min !== undefined && max !== undefined) return `${fmt(min)} to ${fmt(max)}${suffix}`;
   if (min !== undefined) return `${fmt(min)}+${suffix}`;
   return `Under ${fmt(max!)}${suffix}`;
 }

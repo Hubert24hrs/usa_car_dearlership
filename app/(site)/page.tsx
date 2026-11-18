@@ -85,7 +85,7 @@ export default async function HomePage() {
               Your next car, <span className="text-[#fda48a]">priced up front.</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/80">
-              New, used and certified EVs, hybrids, gas and diesel vehicles — with estimated payments on every listing,
+              New, used and certified EVs, hybrids, gas and diesel vehicles, with estimated payments on every listing,
               home delivery and a {dealer.returnWindowDays}-day return window.
             </p>
           </div>
@@ -235,7 +235,7 @@ export default async function HomePage() {
             </div>
           ))}
         </div>
-        <p className="mt-4 text-xs text-muted-foreground">Policy details are placeholders — confirm return, inspection and delivery terms before launch.</p>
+        <p className="mt-4 text-xs text-muted-foreground">Policy details are placeholders. Confirm return, inspection and delivery terms before launch.</p>
       </Section>
 
       {/* ── Finance + trade teasers ─────────────────────────────────────── */}

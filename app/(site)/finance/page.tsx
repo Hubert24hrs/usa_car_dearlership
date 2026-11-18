@@ -39,7 +39,7 @@ export default async function FinancePage({ searchParams }: Props) {
         eyebrow="Financing"
         title="Get pre-qualified with no impact to your credit"
         crumbs={[{ name: "Finance", href: "/finance" }]}
-        description="Answer a few questions and our finance team will match you with lenders — then shop knowing your real budget."
+        description="Answer a few questions and our finance team will match you with lenders. Then shop knowing your real budget."
       />
       <div className="container-page grid gap-8 py-12 lg:grid-cols-[1fr_380px]">
         <section id="prequalify" aria-labelledby="prequal-heading" className="scroll-mt-28 rounded-2xl border bg-card p-6 shadow-soft md:p-8">
@@ -86,13 +86,13 @@ export default async function FinancePage({ searchParams }: Props) {
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-xs text-muted-foreground">Placeholder tiles — add logos only for lenders you have agreements with and permission to display.</p>
+        <p className="mt-3 text-xs text-muted-foreground">Placeholder tiles. Add logos only for lenders you have agreements with and permission to display.</p>
       </Section>
 
       <Section id="faq" eyebrow="FAQ" title="Financing questions" className="pt-0 md:pt-0">
         <Accordion type="single" collapsible className="max-w-3xl">
           {[
-            ["Does pre-qualifying hurt my credit?", "No. Pre-qualification uses the information you provide (and, if a lending partner performs one, a soft inquiry), which doesn't affect your score. A full application for final approval may require a hard inquiry — we'll always ask first."],
+            ["Does pre-qualifying hurt my credit?", "No. Pre-qualification uses the information you provide (and, if a lending partner performs one, a soft inquiry), which doesn't affect your score. A full application for final approval may require a hard inquiry, and we'll always ask first."],
             ["What do I need to finalize a loan?", "Typically a valid driver's license, proof of income, proof of residence and proof of insurance."],
             ["Can I use my own bank or credit union?", "Absolutely. Bring your pre-approval and we'll work with your lender."],
             ["How is the estimated payment on listings calculated?", "Each listing shows an estimated payment with the term, APR and down payment used. Your actual terms depend on credit approval and lender programs; taxes and fees are extra."],

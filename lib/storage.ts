@@ -86,7 +86,7 @@ export async function storeImage(file: File, folder = "vehicles"): Promise<strin
     case "s3":
       return storeS3(bytes, file.type, ext, safeFolder);
     default:
-      if (process.env.VERCEL) throw new UploadError("Local storage is read-only on Vercel — set STORAGE_DRIVER to cloudinary or s3.");
+      if (process.env.VERCEL) throw new UploadError("Local storage is read-only on Vercel. Set STORAGE_DRIVER to cloudinary or s3.");
       return storeLocal(bytes, ext, safeFolder);
   }
 }

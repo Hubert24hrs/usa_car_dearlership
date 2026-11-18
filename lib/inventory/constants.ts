@@ -143,18 +143,18 @@ export const DEFAULT_SORT: SortKey = "featured";
 /** "Shop by budget" bands, by estimated monthly payment. */
 export const MONTHLY_BUDGET_BANDS = [
   { label: "Under $350", min: undefined, max: 350 },
-  { label: "$350 – $500", min: 350, max: 500 },
-  { label: "$500 – $700", min: 500, max: 700 },
-  { label: "$700 – $900", min: 700, max: 900 },
+  { label: "$350 to $500", min: 350, max: 500 },
+  { label: "$500 to $700", min: 500, max: 700 },
+  { label: "$700 to $900", min: 700, max: 900 },
   { label: "$900+", min: 900, max: undefined },
 ] as const;
 
 /** Price bands for grouped browsing. */
 export const PRICE_BANDS = [
   { label: "Under $25k", min: undefined, max: 25_000 },
-  { label: "$25k – $40k", min: 25_000, max: 40_000 },
-  { label: "$40k – $60k", min: 40_000, max: 60_000 },
-  { label: "$60k – $90k", min: 60_000, max: 90_000 },
+  { label: "$25k to $40k", min: 25_000, max: 40_000 },
+  { label: "$40k to $60k", min: 40_000, max: 60_000 },
+  { label: "$60k to $90k", min: 60_000, max: 90_000 },
   { label: "$90k+", min: 90_000, max: undefined },
 ] as const;
 

@@ -127,11 +127,11 @@ export default async function LeadsPage({ searchParams }: Props) {
                     <p className="text-xs text-muted-foreground">{lead.email}</p>
                   </td>
                   <td className="p-3">{LEAD_TYPE_LABELS[lead.type]}</td>
-                  <td className="max-w-48 truncate p-3">{lead.vehicle ? vehicleTitle(lead.vehicle) : "—"}</td>
+                  <td className="max-w-48 truncate p-3">{lead.vehicle ? vehicleTitle(lead.vehicle) : "N/A"}</td>
                   <td className="p-3">
                     <span className={cn("rounded-full px-2 py-0.5 text-xs font-semibold", STATUS_STYLES[lead.status])}>{lead.status.replace("_", " ").toLowerCase()}</span>
                   </td>
-                  <td className="p-3 text-muted-foreground">{lead.assignedTo?.name ?? lead.assignedTo?.email ?? "—"}</td>
+                  <td className="p-3 text-muted-foreground">{lead.assignedTo?.name ?? lead.assignedTo?.email ?? "Unassigned"}</td>
                 </tr>
               ))}
               {leads.length === 0 && (
@@ -166,15 +166,15 @@ export default async function LeadsPage({ searchParams }: Props) {
                 </a>
               </dd>
               <dt className="text-muted-foreground">Phone</dt>
-              <dd>{selected.phone ? <a href={`tel:${selected.phone}`} className="hover:underline">{selected.phone}</a> : "—"}</dd>
+              <dd>{selected.phone ? <a href={`tel:${selected.phone}`} className="hover:underline">{selected.phone}</a> : "N/A"}</dd>
               <dt className="text-muted-foreground">Prefers</dt>
-              <dd>{selected.preferredContact ?? "—"}</dd>
+              <dd>{selected.preferredContact ?? "N/A"}</dd>
               <dt className="text-muted-foreground">SMS consent</dt>
-              <dd>{selected.smsConsent ? "Yes — TCPA text captured" : "No"}</dd>
+              <dd>{selected.smsConsent ? "Yes (TCPA consent text saved)" : "No"}</dd>
               <dt className="text-muted-foreground">Location</dt>
-              <dd>{selected.location?.name ?? "—"}</dd>
+              <dd>{selected.location?.name ?? "N/A"}</dd>
               <dt className="text-muted-foreground">Source</dt>
-              <dd className="truncate">{selected.sourcePath ?? "—"}</dd>
+              <dd className="truncate">{selected.sourcePath ?? "N/A"}</dd>
             </dl>
             {selected.vehicle && (
               <div className="rounded-xl bg-muted/60 p-3 text-sm">
@@ -194,7 +194,7 @@ export default async function LeadsPage({ searchParams }: Props) {
                   {Object.entries(selected.details as Record<string, unknown>).map(([k, v]) => (
                     <div key={k} className="contents">
                       <dt className="text-muted-foreground">{k.replace(/([A-Z])/g, " $1").toLowerCase()}</dt>
-                      <dd>{typeof v === "boolean" ? (v ? "yes" : "no") : String(v ?? "—")}</dd>
+                      <dd>{typeof v === "boolean" ? (v ? "yes" : "no") : String(v ?? "N/A")}</dd>
                     </div>
                   ))}
                 </dl>

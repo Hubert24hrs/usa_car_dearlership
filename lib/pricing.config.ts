@@ -76,7 +76,7 @@ export const PRICING_CONFIG = {
     priceExcludes:
       "Prices exclude tax, title, license, registration and dealer fees. All vehicles are subject to prior sale. Prices and availability may change without notice; see dealer for complete details.",
     paymentEstimate:
-      "Estimated payment for illustration only — not an offer of credit. Based on the disclosed term, APR and down payment with approved credit. Actual rate, term and payment depend on credit approval, lender programs, down payment and trade-in. Taxes, title, license, registration and dealer fees are extra.",
+      "Estimated payment for illustration only. Not an offer of credit. Based on the disclosed term, APR and down payment with approved credit. Actual rate, term and payment depend on credit approval, lender programs, down payment and trade-in. Taxes, title, license, registration and dealer fees are extra.",
     calculator:
       "Payment calculator results are estimates for planning purposes only and exclude taxes and fees. Not an offer of credit; all financing is subject to credit approval.",
   },

@@ -62,7 +62,7 @@ export function FeaturesTabs({
               </a>
             ) : (
               <p className="rounded-xl bg-muted/60 p-3">
-                History report available on request — use “Check availability” and we&apos;ll send it with your quote.
+                History report available on request. Use “Check availability” and we&apos;ll send it with your quote.
               </p>
             )}
           </TabsContent>

@@ -26,7 +26,7 @@ export function ImportForm() {
               return;
             }
             setSummary(result.data ?? null);
-            toast.success(result.data?.dryRun ? "Dry run complete — nothing was saved." : "Import complete");
+            toast.success(result.data?.dryRun ? "Dry run complete. Nothing was saved." : "Import complete");
             router.refresh();
           })
         }
@@ -56,7 +56,7 @@ export function ImportForm() {
             <input type="checkbox" name="dryRun" defaultChecked /> Dry run (validate & preview only)
           </label>
           <label className="flex items-center gap-2">
-            <input type="checkbox" name="markMissingAsSold" /> Full snapshot — mark vehicles missing from this provider as sold
+            <input type="checkbox" name="markMissingAsSold" /> Full snapshot: mark vehicles missing from this provider as sold
           </label>
         </div>
         <Button type="submit" disabled={pending} className="bg-cta text-cta-foreground hover:bg-cta-hover">
@@ -67,7 +67,7 @@ export function ImportForm() {
       {summary && (
         <section className="space-y-4 rounded-2xl border bg-card p-5" aria-live="polite">
           <h2 className="font-semibold">
-            {summary.dryRun ? "Dry run results" : "Import results"} — {summary.status}
+            {summary.dryRun ? "Dry run results" : "Import results"}: {summary.status}
           </h2>
           <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-6">
             {[

@@ -123,7 +123,7 @@ export function VehicleForm({
         toast.error(result.error, { duration: 8000 });
         return;
       }
-      toast.success("Vehicle saved — pricing recalculated.");
+      toast.success("Vehicle saved. Pricing recalculated.");
       router.push(`/admin/inventory/${result.data!.id}`);
       router.refresh();
     });
@@ -173,8 +173,8 @@ export function VehicleForm({
           )}
           {fuel === "ELECTRIC" && (
             <>
-              <Text name="ev_dc_fast_charge_min" label="DC fast charge 10–80% (min)" type="number" values={values} set={set} />
-              <Select name="ev_charge_port" label="Charge port" values={values} set={set} options={[{ value: "", label: "—" }, { value: "NACS", label: "NACS (J3400)" }, { value: "CCS", label: "CCS1" }]} />
+              <Text name="ev_dc_fast_charge_min" label="DC fast charge 10% to 80% (min)" type="number" values={values} set={set} />
+              <Select name="ev_charge_port" label="Charge port" values={values} set={set} options={[{ value: "", label: "Not specified" }, { value: "NACS", label: "NACS (J3400)" }, { value: "CCS", label: "CCS1" }]} />
             </>
           )}
         </div>
@@ -183,10 +183,10 @@ export function VehicleForm({
       {(showBasePricing || !vehicleId) && (
         <section className="space-y-4 rounded-2xl border bg-card p-5">
           <div>
-            <h2 className="font-semibold">Base pricing (dealer feed values — admin only)</h2>
+            <h2 className="font-semibold">Base pricing (dealer feed values, admin only)</h2>
             <p className="text-sm text-muted-foreground">
               Public prices are calculated automatically: price ×{multipliers.vehiclePrice} (nearest $100), down payment ×{multipliers.downPayment} (nearest $50),
-              monthly ×{multipliers.monthlyPayment} (nearest $1) — or the current admin override. Leave down/monthly blank to derive them.
+              monthly ×{multipliers.monthlyPayment} (nearest $1), or the current admin override. Leave down/monthly blank to derive them.
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">

@@ -81,7 +81,7 @@ export function leadNotificationEmail(lead: LeadEmailData, dealer: DealerProfile
     .filter(Boolean)
     .join("\n");
   return {
-    subject: `New lead: ${lead.typeLabel}${lead.vehicle ? ` — ${lead.vehicle.title}` : ""} (${lead.firstName} ${lead.lastName})`,
+    subject: `New lead: ${lead.typeLabel}${lead.vehicle ? ` for ${lead.vehicle.title}` : ""} (${lead.firstName} ${lead.lastName})`,
     html: layout(`New ${lead.typeLabel} lead`, body, dealer),
     text,
   };
@@ -90,11 +90,11 @@ export function leadNotificationEmail(lead: LeadEmailData, dealer: DealerProfile
 export function leadConfirmationEmail(lead: LeadEmailData, dealer: DealerProfile = DEFAULT_DEALER_PROFILE) {
   const what = lead.vehicle ? `the ${escapeHtml(lead.vehicle.title)}` : "your request";
   const body = `<p style="font-size:15px;line-height:1.6">Hi ${escapeHtml(lead.firstName)},</p>
-<p style="font-size:15px;line-height:1.6">Thanks for reaching out about ${what}. A member of our team will get back to you shortly — usually within one business hour during open hours.</p>
+<p style="font-size:15px;line-height:1.6">Thanks for reaching out about ${what}. A member of our team will get back to you shortly, usually within one business hour during open hours.</p>
 ${lead.vehicle ? `<p style="font-size:15px;line-height:1.6"><a href="${escapeHtml(absoluteUrl(`/inventory/${lead.vehicle.slug}`))}" style="color:#0b1f3a;font-weight:600">View the vehicle</a></p>` : ""}
 <p style="font-size:15px;line-height:1.6">Need us sooner? Call ${escapeHtml(dealer.phone)}.</p>`;
   return {
-    subject: `We received your request — ${dealer.name}`,
+    subject: `${dealer.name}: we received your request`,
     html: layout("We got your request", body, dealer),
     text: `Hi ${lead.firstName},\n\nThanks for reaching out about ${lead.vehicle ? `the ${lead.vehicle.title}` : "your request"}. Our team will get back to you shortly.\n\nCall ${dealer.phone} if you need us sooner.\n\n${dealer.name}`,
   };
@@ -124,13 +124,13 @@ export function savedSearchAlertEmail(
     subject: `${data.vehicles.length} new match${data.vehicles.length === 1 ? "" : "es"} for "${data.name}"`,
     html: layout("New vehicles for your saved search", body, dealer, `<br/><a href="${escapeHtml(data.unsubscribeUrl)}" style="color:#6b7280">Unsubscribe from this alert</a>`),
     text: `New matches for "${data.name}":\n${data.vehicles
-      .map((v) => `- ${v.title} — ${formatPrice(v.displayPrice)} ${absoluteUrl(`/inventory/${v.slug}`)}`)
+      .map((v) => `• ${v.title}, ${formatPrice(v.displayPrice)}: ${absoluteUrl(`/inventory/${v.slug}`)}`)
       .join("\n")}\n\nSee all: ${data.searchUrl}\nUnsubscribe: ${data.unsubscribeUrl}`,
   };
 }
 
 export function newsletterWelcomeEmail(unsubscribeUrl: string, dealer: DealerProfile = DEFAULT_DEALER_PROFILE) {
-  const body = `<p style="font-size:15px;line-height:1.6">You're on the list! We'll send new arrivals, price drops and deal alerts — never more than a couple of times a month.</p>`;
+  const body = `<p style="font-size:15px;line-height:1.6">You're on the list! We'll send new arrivals, price drops and deal alerts, never more than a couple of times a month.</p>`;
   return {
     subject: `You're subscribed to ${dealer.name} deal alerts`,
     html: layout("Welcome aboard", body, dealer, `<br/><a href="${escapeHtml(unsubscribeUrl)}" style="color:#6b7280">Unsubscribe</a>`),

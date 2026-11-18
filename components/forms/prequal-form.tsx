@@ -65,7 +65,7 @@ export function PrequalForm({ vehicle }: { vehicle?: { vehicleId: string; vin: s
   if (submittedId) {
     return (
       <SuccessMessage title="Application received" onReset={() => { reset(); form.reset(); setStep(0); }}>
-        Our finance team is reviewing your information and will contact you with options — usually within one business
+        Our finance team is reviewing your information and will contact you with options, usually within one business
         hour. This request does not affect your credit score.
       </SuccessMessage>
     );
@@ -146,8 +146,8 @@ export function PrequalForm({ vehicle }: { vehicle?: { vehicleId: string; vin: s
             {(p) => (
               <NativeSelect {...p} {...form.register("details.creditScoreRange")}>
                 <option value="excellent">Excellent (720+)</option>
-                <option value="good">Good (660–719)</option>
-                <option value="fair">Fair (600–659)</option>
+                <option value="good">Good (660 to 719)</option>
+                <option value="fair">Fair (600 to 659)</option>
                 <option value="poor">Rebuilding (under 600)</option>
                 <option value="unsure">Not sure</option>
               </NativeSelect>
