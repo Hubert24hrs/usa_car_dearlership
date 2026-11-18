@@ -1,4 +1,4 @@
-import { BatteryCharging, Leaf, PlugZap, ShieldCheck, Sparkles } from "lucide-react";
+import { BatteryCharging, Leaf, PlugZap, ShieldCheck } from "lucide-react";
 import type { FuelType, VehicleCondition, VehicleStatus } from "@/lib/inventory/constants";
 import { cn } from "@/lib/utils";
 
@@ -53,10 +53,3 @@ export function StatusBadge({ status, className }: { status: VehicleStatus; clas
   );
 }
 
-export function FeaturedBadge({ className }: { className?: string }) {
-  return (
-    <span className={cn(base, "bg-cta text-cta-foreground", className)}>
-      <Sparkles className="size-3" aria-hidden="true" /> Featured
-    </span>
-  );
-}

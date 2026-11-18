@@ -5,7 +5,7 @@ import type { PublicVehicleCard } from "@/lib/inventory/public";
 import { formatCompactMileage, formatMileage, vehicleTitle } from "@/lib/format";
 import type { FinanceAssumptions } from "@/lib/pricing.config";
 import { cn } from "@/lib/utils";
-import { ConditionBadge, FeaturedBadge, FuelBadge, StatusBadge } from "./badges";
+import { ConditionBadge, FuelBadge, StatusBadge } from "./badges";
 import { CardImageCarousel } from "./card-image-carousel";
 import { CompareToggle } from "./compare-toggle";
 import { LeadDialog } from "./lead-dialog";
@@ -62,7 +62,6 @@ export function VehicleCard({
           <FuelBadge fuel={vehicle.fuelType} />
           <StatusBadge status={vehicle.status} />
         </div>
-        {vehicle.isFeatured && <FeaturedBadge className="pointer-events-none absolute bottom-3 left-3" />}
         <SaveButton
           vehicleId={vehicle.id}
           vin={vehicle.vin}

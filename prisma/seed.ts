@@ -19,11 +19,11 @@ loadEnv({ quiet: true });
 
 import bcrypt from "bcryptjs";
 import { prisma } from "../lib/db";
-import { amortizedMonthlyPayment } from "../lib/finance";
 import { runImport } from "../lib/inventory/importer/pipeline";
 import { withCheckDigit } from "../lib/inventory/vin";
 import { placeholderUrl } from "../lib/placeholder";
-import { roundToNearest } from "../lib/pricing";
+import { pricingForDownPercent, roundToNearest } from "../lib/pricing";
+import { PRICING_CONFIG } from "../lib/pricing.config";
 import { getFinanceAssumptions, getPricingMultipliers } from "../lib/settings";
 import type { FuelType, LeadType } from "../lib/generated/prisma/enums";
 import { CATALOG, FUEL_DISTRIBUTION, MAKE_WMI, type CatalogEntry } from "./seed-data/catalog";
@@ -172,7 +172,6 @@ function description(entry: CatalogEntry, condition: Condition, year: number, tr
     `${intro[condition]} finished in ${color}.`,
     highlights.length ? `Highlights include ${highlights.join(", ").toLowerCase()}.` : "",
     condition === "CPO" ? "Includes the manufacturer certified pre-owned warranty and a multi-point inspection." : "",
-    "Demo listing with placeholder data for development only.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -271,10 +270,8 @@ function buildRecords(count: number, multipliers: Awaited<ReturnType<typeof getP
           ? msrp * between(0.97, 1.06)
           : msrp * residualValue(entry, year, mileage) * (condition === "CPO" ? 1.05 : 1);
       const displayPrice = roundToNearest(Math.max(4_900, retail), 100);
-      const displayDown = roundToNearest(displayPrice * between(0.08, 0.15), 50);
-      const displayMonthly = Math.round(
-        amortizedMonthlyPayment(displayPrice - displayDown, finance.aprPercent, finance.termMonths),
-      );
+      // Standard down payment (30% by default) and the matching amortized monthly payment.
+      const payment = pricingForDownPercent(displayPrice, PRICING_CONFIG.finance.defaultDownPaymentPercent, multipliers, finance);
 
       // Use the model's generated photo (and its paint color) when available; otherwise illustrated placeholders.
       const photos = MODEL_PHOTOS[`${entry.make}|${entry.model}`];
@@ -329,8 +326,8 @@ function buildRecords(count: number, multipliers: Awaited<ReturnType<typeof getP
         description: description(entry, condition, year, trim, paint.name, features),
         // Back-solve the "feed" values so display_* (after multipliers) land on realistic retail numbers.
         base_price: (displayPrice / multipliers.vehiclePrice).toFixed(2),
-        base_down_payment: (displayDown / multipliers.downPayment).toFixed(2),
-        base_monthly_payment: (displayMonthly / multipliers.monthlyPayment).toFixed(2),
+        base_down_payment: payment.baseDownPayment.toFixed(2),
+        base_monthly_payment: payment.baseMonthlyPayment.toFixed(2),
         images: photo ? [photo.url] : [0, 1, 2, 3].map((v) => placeholderUrl({ body: entry.body, color: paint.hex, variant: v, label })),
         spin_images:
           !photo && isFeatured && featured <= 10

@@ -1,4 +1,4 @@
-import { AlertTriangle, BadgeDollarSign, CalendarCheck, CarFront, Info, MapPin, MessageSquare, Phone, Repeat } from "lucide-react";
+import { AlertTriangle, BadgeDollarSign, CalendarCheck, CarFront, MapPin, MessageSquare, Phone, Repeat } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -19,7 +19,6 @@ import { cachedDealerProfile, cachedFinanceAssumptions, cachedSimilarVehicles, c
 import { bodyLabel, fuelLabel } from "@/lib/inventory/constants";
 import { getFeaturedVehicles } from "@/lib/inventory/vehicles";
 import { formatHour, formatMileage, formatPrice, vehicleTitle } from "@/lib/format";
-import { DEMO_IMAGE_NOTICE } from "@/lib/legal";
 import { PRICING_CONFIG } from "@/lib/pricing.config";
 import { vehicleJsonLd } from "@/lib/seo";
 import { absoluteUrl, smsHref, telHref } from "@/lib/site.config";
@@ -92,11 +91,6 @@ export default async function VehiclePage({ params }: Props) {
         ]}
       />
 
-      {vehicle.isDemo && (
-        <p className="mb-4 flex items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm text-amber-900 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-100">
-          <Info className="size-4 shrink-0" aria-hidden="true" /> {DEMO_IMAGE_NOTICE}
-        </p>
-      )}
       {sold && (
         <p role="status" className="mb-4 flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-medium">
           <AlertTriangle className="size-4 shrink-0" aria-hidden="true" /> This vehicle has been sold. Similar vehicles are shown below.
