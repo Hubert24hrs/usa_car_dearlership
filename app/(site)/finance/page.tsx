@@ -8,6 +8,7 @@ import { FinanceCalculator } from "@/components/vehicle/finance-calculator";
 import { prisma } from "@/lib/db";
 import { cachedFinanceAssumptions } from "@/lib/inventory/cached";
 import { vehicleTitle } from "@/lib/format";
+import { pricingForDownPercent } from "@/lib/pricing";
 import { shouldShowDemoInventory } from "@/lib/settings";
 
 export const metadata: Metadata = {
@@ -30,7 +31,7 @@ export default async function FinancePage({ searchParams }: Props) {
       : null,
   ]);
   const price = vehicle ? Number(vehicle.displayPrice) : 35_000;
-  const down = vehicle ? Number(vehicle.displayDownPayment) : 3_500;
+  const down = vehicle ? Number(vehicle.displayDownPayment) : pricingForDownPercent(price).displayDownPayment;
 
   return (
     <>

@@ -67,8 +67,8 @@ describe("prepareRecord — pricing applied at import time", () => {
     const result = prepareRecord(priceOnly, 2, ctx);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.vehicle.data.baseDownPayment).toBe(2_000); // 10% default
-    expect(result.vehicle.data.displayDownPayment).toBe(2_400);
+    expect(result.vehicle.data.baseDownPayment).toBe(6_000); // 30% default
+    expect(result.vehicle.data.displayDownPayment).toBe(7_200);
     expect(result.vehicle.data.displayMonthlyPayment).toBeGreaterThan(0);
   });
 

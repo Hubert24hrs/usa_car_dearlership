@@ -105,6 +105,35 @@ export function deriveBasePricing(
   return { basePrice, baseDownPayment: roundCents(baseDownPayment), baseMonthlyPayment: roundCents(baseMonthlyPayment) };
 }
 
+/**
+ * Down payment and monthly payment for a vehicle at `downPercent`% down of its
+ * displayed price. The monthly payment is the true amortized payment on the
+ * remaining balance at the disclosed APR and term, so the advertised payment
+ * matches the advertised price, down payment, APR and term. Base (feed) values
+ * are back-solved so applyPricingMultipliers reproduces these display values.
+ */
+export function pricingForDownPercent(
+  displayPrice: number,
+  downPercent: number = PRICING_CONFIG.finance.defaultDownPaymentPercent,
+  multipliers: PricingMultipliers = DEFAULT_MULTIPLIERS,
+  assumptions: FinanceAssumptions = DEFAULT_FINANCE_ASSUMPTIONS,
+): Pick<BasePricing, "baseDownPayment" | "baseMonthlyPayment"> & Pick<DisplayPricing, "displayDownPayment" | "displayMonthlyPayment"> {
+  if (!Number.isFinite(displayPrice) || displayPrice < 0) throw new RangeError("displayPrice must be a non-negative number");
+  if (!Number.isFinite(downPercent) || downPercent < 0 || downPercent > 100) throw new RangeError("downPercent must be between 0 and 100");
+  const { rounding } = PRICING_CONFIG;
+  const displayDownPayment = Math.min(displayPrice, roundToNearest((displayPrice * downPercent) / 100, rounding.downPayment));
+  const displayMonthlyPayment = roundToNearest(
+    amortizedMonthlyPayment(displayPrice - displayDownPayment, assumptions.aprPercent, assumptions.termMonths),
+    rounding.monthlyPayment,
+  );
+  return {
+    displayDownPayment,
+    displayMonthlyPayment,
+    baseDownPayment: roundCents(displayDownPayment / multipliers.downPayment),
+    baseMonthlyPayment: roundCents(displayMonthlyPayment / multipliers.monthlyPayment),
+  };
+}
+
 /** Convenience: derive missing base values, then apply multipliers. */
 export function computePricing(
   input: { basePrice: number; baseDownPayment?: number | null; baseMonthlyPayment?: number | null },

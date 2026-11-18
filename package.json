@@ -17,6 +17,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
     "db:seed:small": "tsx prisma/seed.ts --count=120",
+    "inventory:down-payment": "tsx scripts/set-down-payment.ts",
     "db:studio": "prisma studio",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "postinstall": "prisma generate"

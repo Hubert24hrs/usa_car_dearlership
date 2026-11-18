@@ -3,6 +3,7 @@ import {
   applyPricingMultipliers,
   computePricing,
   deriveBasePricing,
+  pricingForDownPercent,
   resolveMultipliers,
   roundToNearest,
   validateMultipliers,
@@ -121,10 +122,11 @@ describe("validateMultipliers / resolveMultipliers", () => {
 });
 
 describe("deriveBasePricing / computePricing", () => {
-  it("derives a 10% down payment and amortized monthly payment when the feed omits them", () => {
+  it("derives a 30% down payment and amortized monthly payment when the feed omits them", () => {
+    expect(PRICING_CONFIG.finance.defaultDownPaymentPercent).toBe(30);
     const base = deriveBasePricing({ basePrice: 30_000 });
-    expect(base.baseDownPayment).toBe(3_000);
-    expect(base.baseMonthlyPayment).toBeCloseTo(amortizedMonthlyPayment(27_000, 7.49, 72), 2);
+    expect(base.baseDownPayment).toBe(9_000);
+    expect(base.baseMonthlyPayment).toBeCloseTo(amortizedMonthlyPayment(21_000, 7.49, 72), 2);
   });
 
   it("keeps feed-provided values", () => {
@@ -145,5 +147,34 @@ describe("deriveBasePricing / computePricing", () => {
       displayDownPayment: 3_000,
       displayMonthlyPayment: 440,
     });
+  });
+});
+
+describe("pricingForDownPercent", () => {
+  it("sets 30% down (nearest $50) and the amortized monthly payment on the rest", () => {
+    const p = pricingForDownPercent(40_000);
+    expect(p.displayDownPayment).toBe(12_000);
+    expect(p.displayMonthlyPayment).toBe(Math.round(amortizedMonthlyPayment(28_000, 7.49, 72)));
+    expect(pricingForDownPercent(31_200).displayDownPayment).toBe(9_350); // 9,360 → nearest $50
+  });
+
+  it("back-solves base values that the multipliers turn back into the same display values", () => {
+    for (let price = 4_900; price <= 150_000; price += 1_300) {
+      const p = pricingForDownPercent(price, 30);
+      const display = applyPricingMultipliers({
+        basePrice: Number((price / DEFAULT_MULTIPLIERS.vehiclePrice).toFixed(2)),
+        baseDownPayment: p.baseDownPayment,
+        baseMonthlyPayment: p.baseMonthlyPayment,
+      });
+      expect(display).toEqual({ displayPrice: price, displayDownPayment: p.displayDownPayment, displayMonthlyPayment: p.displayMonthlyPayment });
+      expect(Math.abs(p.displayDownPayment / price - 0.3)).toBeLessThanOrEqual(25 / price);
+    }
+  });
+
+  it("supports other percentages and rejects invalid ones", () => {
+    expect(pricingForDownPercent(30_000, 0).displayDownPayment).toBe(0);
+    expect(pricingForDownPercent(30_000, 100)).toMatchObject({ displayDownPayment: 30_000, displayMonthlyPayment: 0 });
+    expect(() => pricingForDownPercent(30_000, 101)).toThrow(RangeError);
+    expect(() => pricingForDownPercent(-1)).toThrow(RangeError);
   });
 });

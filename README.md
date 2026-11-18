@@ -82,6 +82,7 @@ Open http://localhost:3000. Sign in at `/account/sign-in` with `SEED_ADMIN_EMAIL
 | `npm run db:deploy` | `prisma migrate deploy` (apply migrations) |
 | `npm run db:seed` / `db:seed:small` | Demo data (1,500 / 120 vehicles) |
 | `npm run db:studio` | Prisma Studio |
+| `npm run inventory:down-payment` | Set every vehicle to the standard down payment (30%, or `-- --percent=25`) and recalculate monthly payments |
 
 ## Environment variables
 
@@ -116,7 +117,7 @@ All business multipliers live in **one file: [`lib/pricing.config.ts`](lib/prici
 - Multipliers are applied **at import time** by the pipeline ([`lib/pricing.ts`](lib/pricing.ts), [`lib/inventory/importer/prepare.ts`](lib/inventory/importer/prepare.ts)); both base and display values are stored. Display values supplied by a feed are ignored and recomputed.
 - Public pages, APIs and JSON-LD use [`lib/inventory/public.ts`](lib/inventory/public.ts) selects that **never include `base_*`** (enforced by a unit test). In the admin, base pricing is visible to Admin and Finance roles only.
 - **Admin → Settings & pricing** changes multipliers (bounded 0.5–3) and the disclosed term/APR without a redeploy; saving re-prices every vehicle from its stored base values and is audit-logged.
-- When a feed omits down/monthly payments they are derived (10% down; amortized at the disclosed APR/term) before multipliers.
+- The standard down payment is **30% of the price** (`finance.defaultDownPaymentPercent`). Feeds that omit down/monthly payments get 30% down and the payment amortized at the disclosed APR/term; `npm run inventory:down-payment` resets every vehicle to it (prices unchanged, monthly payments recalculated).
 - Every "Est. $X/mo" discloses the term, APR and down payment, with the legal disclaimer from the config.
 
 > ⚠️ **Compliance note:** because the monthly multiplier (1.10) differs from the price multiplier (1.20), an advertised payment can be lower than the payment implied by the advertised price, APR and term. Truth-in-Lending advertising rules (Reg Z/M) and state laws require advertised credit terms to be accurate, and some states (e.g. CA, CO) require advertised prices to include dealer fees. Have counsel review the multipliers and disclaimers before launch. (The demo seed back-solves feed values so its displayed payments are internally consistent.)
@@ -146,7 +147,7 @@ Manual form ─────┘                                            │
 
 Every catalog model has **two AI-generated studio photos in different paint colors (604 images)**. They were made with Higgsfield (`gpt_image_2_6`) from text prompts only; no third-party photos were used as input. Each demo vehicle takes its exterior color from the photo it uses. The URLs are listed in [`prisma/seed-data/vehicle-images.json`](prisma/seed-data/vehicle-images.json), keyed by `Make|Model`. A model without a photo falls back to the generated SVG artwork served at `/api/placeholder/vehicle`.
 
-- These photos are **illustrative only**. Vehicle pages show a "demo listing" notice, and real listings must use photos of the actual unit.
+- These photos are **illustrative only**. Demo inventory is hidden in production unless `SHOW_DEMO_INVENTORY=true`; real listings must use photos of the actual unit.
 - The images are hosted on Higgsfield's CDN (`*.cloudfront.net`, already allowed in `next.config.ts`). For a long-lived staging site, copy them to your own storage (Cloudinary/S3) and rewrite the manifest URLs.
 
 ## Search & SEO URLs

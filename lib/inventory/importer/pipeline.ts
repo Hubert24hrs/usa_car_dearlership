@@ -14,7 +14,7 @@
 import { prisma } from "@/lib/db";
 import type { FeedProvider, ImportSource, ImportStatus } from "@/lib/generated/prisma/enums";
 import type { Prisma } from "@/lib/generated/prisma/client";
-import { applyPricingMultipliers } from "@/lib/pricing";
+import { applyPricingMultipliers, pricingForDownPercent } from "@/lib/pricing";
 import { getFinanceAssumptions, getPricingMultipliers } from "@/lib/settings";
 import { getAdapter } from "./adapters";
 import { prepareRecords, type PreparedVehicle, type RowError } from "./prepare";
@@ -243,6 +243,33 @@ export async function repriceAllVehicles(): Promise<number> {
           data: { ...display, pricingMultipliers: { ...multipliers, ...finance }, pricedAt },
         });
       }),
+    );
+    count += batch.length;
+  }
+  return count;
+}
+
+/**
+ * Set every vehicle's down payment to `percent`% of its price and recompute its
+ * monthly payment (see pricingForDownPercent). Prices are unchanged.
+ */
+export async function applyDownPaymentPercent(percent: number): Promise<number> {
+  const [multipliers, finance] = await Promise.all([getPricingMultipliers(), getFinanceAssumptions()]);
+  const vehicles = await prisma.vehicle.findMany({ select: { id: true, displayPrice: true } });
+  const pricedAt = new Date();
+  let count = 0;
+  for (const batch of chunk(vehicles, 200)) {
+    await prisma.$transaction(
+      batch.map((v) =>
+        prisma.vehicle.update({
+          where: { id: v.id },
+          data: {
+            ...pricingForDownPercent(Number(v.displayPrice), percent, multipliers, finance),
+            pricingMultipliers: { ...multipliers, ...finance },
+            pricedAt,
+          },
+        }),
+      ),
     );
     count += batch.length;
   }

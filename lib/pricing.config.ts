@@ -58,10 +58,11 @@ export const PRICING_CONFIG = {
     termMonths: 72,
     aprPercent: 7.49,
     /**
-     * When a feed record omits base_down_payment / base_monthly_payment they
-     * are derived from base_price with these assumptions before multipliers.
+     * Standard down payment as a percent of the vehicle price. Used when a feed
+     * record omits base_down_payment / base_monthly_payment, by the demo seed,
+     * and by `npm run inventory:down-payment` to reset every vehicle.
      */
-    defaultDownPaymentPercent: 10,
+    defaultDownPaymentPercent: 30,
     /** Payment calculator controls on the VDP and /finance page. */
     calculator: {
       terms: [36, 48, 60, 72, 84],
