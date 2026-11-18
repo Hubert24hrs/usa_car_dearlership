@@ -57,29 +57,15 @@ jobs:
             echo "$name=ci-$(openssl rand -hex 24)" >> "$GITHUB_ENV"
           done
 
-      # `npm ci` once package-lock.json includes the dev dependencies.
       - name: Install dependencies (runs prisma generate)
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
 
-      - name: Create database schema
-        run: |
-          if ls prisma/migrations/*/migration.sql > /dev/null 2>&1; then
-            npx prisma migrate deploy
-          else
-            npx prisma db push
-          fi
-
-      - name: Print initial migration SQL (until prisma/migrations is committed)
-        if: hashFiles('prisma/migrations/**/migration.sql') == ''
-        continue-on-error: true
-        run: |
-          echo "-----BEGIN MIGRATION-----"
-          npx prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script
-          echo "-----END MIGRATION-----"
+      - name: Apply database migrations
+        run: npx prisma migrate deploy
 
       - name: Seed demo inventory (1,500 vehicles)
         run: npm run db:seed

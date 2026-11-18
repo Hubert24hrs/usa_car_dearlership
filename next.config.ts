@@ -50,6 +50,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Pin the project root: a stray lockfile in a parent folder (e.g. the home
+  // directory) would otherwise make Next.js treat that folder as the workspace.
+  turbopack: { root: __dirname },
+  outputFileTracingRoot: __dirname,
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns,

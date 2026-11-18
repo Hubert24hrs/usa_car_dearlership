@@ -20,8 +20,9 @@ function createPrismaClient(): PrismaClient {
     connectionString,
     // Serverless-friendly pool size; managed poolers (Neon/Supabase) handle the rest.
     max: Number(process.env.DATABASE_POOL_MAX ?? 10),
-    // Fail fast instead of hanging builds/requests when the DB is unreachable.
-    connectionTimeoutMillis: 5_000,
+    // Fail fast in production when the DB is unreachable. The dev server can stall
+    // for several seconds while it compiles a route, so allow longer there.
+    connectionTimeoutMillis: process.env.NODE_ENV === "production" ? 5_000 : 30_000,
     idleTimeoutMillis: 30_000,
   });
   return new PrismaClient({
