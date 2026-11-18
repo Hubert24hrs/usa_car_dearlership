@@ -213,7 +213,8 @@ export function parseFilters(searchParams: SearchParamsInput, pathSegments: stri
   f.q = q;
 
   const sort = getFirst(searchParams, "sort");
-  f.sort = SORT_OPTIONS.some((o) => o.value === sort) ? (sort as SortKey) : DEFAULT_SORT;
+  // Keyword searches sort by relevance unless another order is requested.
+  f.sort = SORT_OPTIONS.some((o) => o.value === sort) ? (sort as SortKey) : f.q ? "relevance" : DEFAULT_SORT;
   if (f.sort === "relevance" && !f.q) f.sort = DEFAULT_SORT;
   f.page = Math.min(500, Math.max(1, parsePositiveInt(getFirst(searchParams, "page")) ?? 1));
   f.view = getFirst(searchParams, "view") === "list" ? "list" : "grid";

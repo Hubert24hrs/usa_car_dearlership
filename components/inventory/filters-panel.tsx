@@ -181,8 +181,12 @@ function KeywordSearch() {
   const [q, setQ] = useState(filters.q);
   useEffect(() => setQ(filters.q), [filters.q]);
   return (
+    // action/method/name make the search work before hydration (plain GET to /inventory?q=…);
+    // once hydrated, onSubmit keeps the other active filters.
     <form
       role="search"
+      action="/inventory"
+      method="get"
       onSubmit={(e) => {
         e.preventDefault();
         navigate(withFilters(filters, { q: q.trim(), sort: q.trim() ? "relevance" : filters.sort === "relevance" ? "featured" : filters.sort }));
@@ -191,6 +195,7 @@ function KeywordSearch() {
     >
       <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
       <Input
+        name="q"
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Make, model, feature, VIN…"

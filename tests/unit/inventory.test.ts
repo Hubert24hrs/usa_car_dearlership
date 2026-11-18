@@ -181,3 +181,12 @@ describe("finance math", () => {
     expect(amortizedMonthlyPayment(principal, 7.49, 72)).toBeCloseTo(500, 1);
   });
 });
+
+describe("keyword search sort", () => {
+  it("defaults keyword searches to relevance but honors an explicit sort", () => {
+    expect(parseFilters({ q: "hybrid" }).filters.sort).toBe("relevance");
+    expect(parseFilters({ q: "hybrid", sort: "price_asc" }).filters.sort).toBe("price_asc");
+    expect(parseFilters({ sort: "relevance" }).filters.sort).toBe("featured");
+    expect(parseFilters({}).filters.sort).toBe("featured");
+  });
+});
