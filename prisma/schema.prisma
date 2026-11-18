@@ -1,0 +1,470 @@
+// Prestige Auto Group — Dealership Platform
+// Prisma schema (PostgreSQL). Column names are snake_case to match the
+// inventory spec; Prisma fields are camelCase via @map.
+//
+// Pricing rule reminder: base_* columns hold the dealer's raw feed values and
+// are ADMIN-ONLY. display_* columns are computed at import time from base_*
+// using the multipliers in lib/pricing.config.ts (or the admin override stored
+// in the `settings` table). Public pages must only ever read display_*.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  CUSTOMER
+  SALES
+  FINANCE
+  ADMIN
+}
+
+enum VehicleCondition {
+  NEW
+  USED
+  CPO
+}
+
+enum BodyStyle {
+  SEDAN
+  SUV
+  CROSSOVER
+  TRUCK
+  COUPE
+  CONVERTIBLE
+  HATCHBACK
+  VAN
+  WAGON
+}
+
+enum FuelType {
+  GAS
+  DIESEL
+  HYBRID
+  PLUG_IN_HYBRID
+  ELECTRIC
+}
+
+enum Drivetrain {
+  FWD
+  RWD
+  AWD
+  FOUR_WD
+}
+
+enum TransmissionType {
+  AUTOMATIC
+  MANUAL
+  CVT
+  DIRECT_DRIVE
+}
+
+enum ChargePort {
+  NACS
+  CCS
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  PENDING
+  SOLD
+}
+
+enum ImportSource {
+  CSV
+  JSON
+  FEED
+  MANUAL
+  SEED
+}
+
+enum ImportStatus {
+  RUNNING
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+enum FeedProvider {
+  HOMENET
+  VAUTO
+  DEALERCOM
+  CDK
+  GENERIC_CSV
+  GENERIC_JSON
+}
+
+enum LeadType {
+  CHECK_AVAILABILITY
+  TEST_DRIVE
+  PRE_APPROVAL
+  TRADE_IN
+  TEXT_US
+  CONTACT
+  SERVICE
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  APPOINTMENT_SET
+  WON
+  LOST
+}
+
+enum AlertFrequency {
+  DAILY
+  WEEKLY
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// People
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique
+  name         String?
+  phone        String?
+  passwordHash String    @map("password_hash")
+  role         Role      @default(CUSTOMER)
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  savedVehicles SavedVehicle[]
+  savedSearches SavedSearch[]
+  assignedLeads Lead[]         @relation("LeadAssignee")
+  leadNotes     LeadNote[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Locations & inventory
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Location {
+  id           String   @id @default(uuid()) @db.Uuid
+  slug         String   @unique
+  name         String
+  address1     String   @map("address_1")
+  address2     String?  @map("address_2")
+  city         String
+  state        String   @db.VarChar(2)
+  zip          String   @db.VarChar(10)
+  phone        String
+  smsPhone     String?  @map("sms_phone")
+  email        String?
+  latitude     Float
+  longitude    Float
+  /// [{ "day": "Mon", "open": "09:00", "close": "20:00" }] — null open = closed
+  salesHours   Json     @map("sales_hours")
+  serviceHours Json     @map("service_hours")
+  isPrimary    Boolean  @default(false) @map("is_primary")
+  isDemo       Boolean  @default(false) @map("is_demo")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  vehicles    Vehicle[]
+  leads       Lead[]
+  feedSources FeedSource[]
+
+  @@map("locations")
+}
+
+model Vehicle {
+  id                  String           @id @default(uuid()) @db.Uuid
+  vin                 String           @unique @db.VarChar(17)
+  stockNumber         String           @map("stock_number")
+  /// SEO slug: {year}-{make}-{model}-{trim}-{vin}
+  slug                String           @unique
+  condition           VehicleCondition
+  year                Int
+  make                String
+  makeSlug            String           @map("make_slug")
+  model               String
+  modelSlug           String           @map("model_slug")
+  trim                String           @default("")
+  bodyStyle           BodyStyle        @map("body_style")
+  fuelType            FuelType         @map("fuel_type")
+  // EV specs (null for non-plug-in vehicles)
+  evRangeMiles        Int?             @map("ev_range_miles")
+  evBatteryKwh        Float?           @map("ev_battery_kwh")
+  evDcFastChargeMin   Int?             @map("ev_dc_fast_charge_min")
+  evChargePort        ChargePort?      @map("ev_charge_port")
+  // MPG (null for battery-electric vehicles)
+  mpgCity             Int?             @map("mpg_city")
+  mpgHighway          Int?             @map("mpg_highway")
+  mpgCombined         Int?             @map("mpg_combined")
+  engine              String           @default("")
+  transmission        String           @default("")
+  /// Normalized from `transmission` for faceting
+  transmissionType    TransmissionType @default(AUTOMATIC) @map("transmission_type")
+  drivetrain          Drivetrain
+  mileage             Int              @default(0)
+  exteriorColor       String           @map("exterior_color")
+  /// Normalized color family ("black", "white", …) for faceting
+  exteriorColorFamily String           @default("other") @map("exterior_color_family")
+  interiorColor       String           @map("interior_color")
+  interiorColorFamily String           @default("other") @map("interior_color_family")
+  features            String[]         @default([])
+  safetyFeatures      String[]         @default([]) @map("safety_features")
+  description         String?
+
+  // ── Pricing ── base_* = dealer feed values (ADMIN ONLY). display_* = public.
+  basePrice             Decimal @map("base_price") @db.Decimal(12, 2)
+  baseDownPayment       Decimal @map("base_down_payment") @db.Decimal(12, 2)
+  baseMonthlyPayment    Decimal @map("base_monthly_payment") @db.Decimal(12, 2)
+  displayPrice          Decimal @map("display_price") @db.Decimal(12, 2)
+  displayDownPayment    Decimal @map("display_down_payment") @db.Decimal(12, 2)
+  displayMonthlyPayment Decimal @map("display_monthly_payment") @db.Decimal(12, 2)
+  /// Snapshot of the multipliers used to compute display_* (audit trail)
+  pricingMultipliers    Json?   @map("pricing_multipliers")
+  pricedAt              DateTime? @map("priced_at")
+
+  images     String[] @default([])
+  /// Ordered frames for the optional 360° spin viewer
+  spinImages String[] @default([]) @map("spin_images")
+  videoUrl   String?  @map("video_url")
+  carfaxUrl  String?  @map("carfax_url")
+
+  status     VehicleStatus @default(AVAILABLE)
+  locationId String        @map("location_id") @db.Uuid
+  location   Location      @relation(fields: [locationId], references: [id])
+  isFeatured Boolean       @default(false) @map("is_featured")
+  isDemo     Boolean       @default(false) @map("is_demo")
+
+  source     ImportSource @default(MANUAL)
+  /// Feed / provider identifier for the last import that touched this row
+  sourceRef  String?      @map("source_ref")
+  /// Denormalized lowercase text used by Postgres full-text search
+  searchText String       @default("") @map("search_text")
+  viewCount  Int          @default(0) @map("view_count")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  savedBy SavedVehicle[]
+  leads   Lead[]
+
+  @@index([status, isDemo])
+  @@index([condition])
+  @@index([fuelType])
+  @@index([bodyStyle])
+  @@index([makeSlug, modelSlug])
+  @@index([displayPrice])
+  @@index([displayMonthlyPayment])
+  @@index([year])
+  @@index([mileage])
+  @@index([isFeatured, createdAt])
+  @@index([locationId])
+  @@index([sourceRef])
+  @@map("vehicles")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shopper features
+// ─────────────────────────────────────────────────────────────────────────────
+
+model SavedVehicle {
+  userId    String   @map("user_id") @db.Uuid
+  vehicleId String   @map("vehicle_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, vehicleId])
+  @@map("saved_vehicles")
+}
+
+model SavedSearch {
+  id               String         @id @default(uuid()) @db.Uuid
+  userId           String?        @map("user_id") @db.Uuid
+  email            String
+  name             String
+  /// Canonical inventory URL (path + query) that reproduces the search
+  url              String
+  alertsEnabled    Boolean        @default(true) @map("alerts_enabled")
+  frequency        AlertFrequency @default(DAILY)
+  lastNotifiedAt   DateTime?      @map("last_notified_at")
+  unsubscribeToken String         @unique @default(uuid()) @map("unsubscribe_token")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([alertsEnabled])
+  @@index([email])
+  @@map("saved_searches")
+}
+
+model NewsletterSubscriber {
+  id               String    @id @default(uuid()) @db.Uuid
+  email            String    @unique
+  dealAlerts       Boolean   @default(true) @map("deal_alerts")
+  subscribed       Boolean   @default(true)
+  unsubscribeToken String    @unique @default(uuid()) @map("unsubscribe_token")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  unsubscribedAt   DateTime? @map("unsubscribed_at")
+
+  @@map("newsletter_subscribers")
+}
+
+model Review {
+  id        String   @id @default(uuid()) @db.Uuid
+  author    String
+  rating    Int
+  title     String?
+  body      String
+  source    String?
+  /// Demo reviews are placeholders: never shown in production, never in JSON-LD
+  isDemo    Boolean  @default(false) @map("is_demo")
+  published Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("reviews")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Leads / CRM
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Lead {
+  id               String     @id @default(uuid()) @db.Uuid
+  type             LeadType
+  status           LeadStatus @default(NEW)
+  firstName        String     @map("first_name")
+  lastName         String     @map("last_name")
+  email            String
+  phone            String?
+  preferredContact String?    @map("preferred_contact")
+  message          String?
+  /// TCPA: explicit, unchecked-by-default SMS consent + the exact text shown
+  smsConsent       Boolean    @default(false) @map("sms_consent")
+  smsConsentText   String?    @map("sms_consent_text")
+  /// Type-specific payload (test-drive slot, trade-in vehicle, finance info…)
+  details          Json?
+  vehicleId        String?    @map("vehicle_id") @db.Uuid
+  locationId       String?    @map("location_id") @db.Uuid
+  assignedToId     String?    @map("assigned_to_id") @db.Uuid
+  sourcePath       String?    @map("source_path")
+  utm              Json?
+  /// HMAC of the client IP (never the raw IP) for abuse investigation
+  ipHash           String?    @map("ip_hash")
+  userAgent        String?    @map("user_agent")
+  emailedAt        DateTime?  @map("emailed_at")
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+
+  vehicle    Vehicle?   @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  location   Location?  @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  assignedTo User?      @relation("LeadAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  notes      LeadNote[]
+
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@index([email])
+  @@map("leads")
+}
+
+model LeadNote {
+  id        String   @id @default(uuid()) @db.Uuid
+  leadId    String   @map("lead_id") @db.Uuid
+  authorId  String?  @map("author_id") @db.Uuid
+  body      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  lead   Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([leadId])
+  @@map("lead_notes")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Admin: settings, imports, feeds, audit
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Key/value runtime settings (pricing multipliers, finance assumptions,
+/// dealer profile incl. license number). Defaults live in code.
+model Setting {
+  key       String   @id
+  value     Json
+  updatedBy String?  @map("updated_by")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
+
+model FeedSource {
+  id                String       @id @default(uuid()) @db.Uuid
+  name              String
+  provider          FeedProvider
+  url               String
+  /// Name of the env var holding the feed credential (never the secret itself)
+  authEnvVar        String?      @map("auth_env_var")
+  locationId        String?      @map("location_id") @db.Uuid
+  enabled           Boolean      @default(true)
+  markMissingAsSold Boolean      @default(true) @map("mark_missing_as_sold")
+  lastRunAt         DateTime?    @map("last_run_at")
+  lastStatus        ImportStatus? @map("last_status")
+  lastMessage       String?      @map("last_message")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+
+  location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  jobs     ImportJob[]
+
+  @@map("feed_sources")
+}
+
+model ImportJob {
+  id           String       @id @default(uuid()) @db.Uuid
+  source       ImportSource
+  feedSourceId String?      @map("feed_source_id") @db.Uuid
+  fileName     String?      @map("file_name")
+  status       ImportStatus @default(RUNNING)
+  dryRun       Boolean      @default(false) @map("dry_run")
+  totalRows    Int          @default(0) @map("total_rows")
+  created      Int          @default(0)
+  updated      Int          @default(0)
+  skipped      Int          @default(0)
+  failed       Int          @default(0)
+  markedSold   Int          @default(0) @map("marked_sold")
+  /// [{ row, vin?, field?, message }]
+  errors       Json?
+  triggeredBy  String?      @map("triggered_by")
+  startedAt    DateTime     @default(now()) @map("started_at")
+  finishedAt   DateTime?    @map("finished_at")
+
+  feedSource FeedSource? @relation(fields: [feedSourceId], references: [id], onDelete: SetNull)
+
+  @@index([startedAt])
+  @@map("import_jobs")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  actor     String
+  action    String
+  entity    String
+  entityId  String?  @map("entity_id")
+  data      Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("audit_logs")
+}
