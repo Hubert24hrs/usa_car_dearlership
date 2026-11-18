@@ -14,17 +14,39 @@ import { prisma } from "@/lib/db";
 
 export type KeywordMatches = Map<string, number>;
 
-/** Turn free text into a safe prefix tsquery: "toyota cam" → "toyota:* & cam:*". */
-export function toPrefixTsQuery(q: string): string | null {
-  const tokens = q
+/** Common words that would match nothing useful in an "any word" search. */
+const ANY_MODE_STOP_WORDS = new Set(["a", "an", "the", "and", "or", "for", "with", "in", "of", "to", "car", "cars", "vehicle", "under", "below", "sale", "new", "used"]);
+
+/**
+ * Turn free text into a safe prefix tsquery.
+ *   all (default): "toyota cam" → "toyota:* & cam:*"   (every word must match)
+ *   any:           "toyota cam" → "toyota:* | cam:*"   (partial matches, for "similar" fallbacks)
+ */
+export function toPrefixTsQuery(q: string, mode: "all" | "any" = "all"): string | null {
+  let tokens = q
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[̀-ͯ]/g, "")
     .split(/[^a-z0-9]+/)
     .filter(Boolean)
     .slice(0, 8);
+  if (mode === "any") tokens = tokens.filter((t) => t.length > 1 && !ANY_MODE_STOP_WORDS.has(t));
   if (tokens.length === 0) return null;
-  return tokens.map((t) => `${t}:*`).join(" & ");
+  return tokens.map((t) => `${t}:*`).join(mode === "all" ? " & " : " | ");
+}
+
+/** Vehicles matching any word of the query, best first (Postgres full-text). */
+export async function anyKeywordMatches(q: string, limit = 200): Promise<KeywordMatches> {
+  const tsquery = toPrefixTsQuery(q, "any");
+  if (!tsquery) return new Map();
+  const rows = await prisma.$queryRaw<{ id: string; rank: number }[]>`
+    SELECT id::text AS id,
+           ts_rank(to_tsvector('english', search_text), to_tsquery('english', ${tsquery})) AS rank
+    FROM vehicles
+    WHERE to_tsvector('english', search_text) @@ to_tsquery('english', ${tsquery})
+    ORDER BY rank DESC
+    LIMIT ${limit}`;
+  return new Map(rows.map((r) => [r.id, Number(r.rank)]));
 }
 
 async function postgresMatches(q: string): Promise<KeywordMatches> {

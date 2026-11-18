@@ -273,7 +273,8 @@ const dealerSchema = z.object({
   returnWindowDays: z.number().int().min(0).max(60),
   returnWindowMiles: z.number().int().min(0).max(5000),
   inspectionPoints: z.number().int().min(0).max(500),
-  deliveryRadiusMiles: z.number().int().min(0).max(5000),
+  freeDeliveryMiles: z.number().int().min(0).max(500),
+  nationwideDelivery: z.boolean(),
 });
 
 export async function saveDealerProfile(input: unknown): Promise<Result> {

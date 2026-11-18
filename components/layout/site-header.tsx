@@ -1,22 +1,31 @@
-import { Phone } from "lucide-react";
+import { Phone, Truck } from "lucide-react";
 import Link from "next/link";
 import { cachedDealerProfile } from "@/lib/inventory/cached";
-import { MAIN_NAV, telHref } from "@/lib/site.config";
+import { deliveryOffer, MAIN_NAV, telHref } from "@/lib/site.config";
 import { AccountMenu, DesktopNav, MobileNav, SavedLink, ThemeToggle } from "./header-actions";
 import { Logo } from "./logo";
+import { SiteSearch } from "./site-search";
 
 export async function SiteHeader() {
   const dealer = await cachedDealerProfile();
   const phoneHref = telHref(dealer.phone);
+  const delivery = deliveryOffer(dealer);
   return (
     <header role="banner" className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
-      <div className="hidden bg-brand text-brand-foreground md:block">
-        <div className="container-page flex h-9 items-center justify-between text-xs">
-          <p className="text-white/85">
-            Transparent pricing · {dealer.inspectionPoints}-point inspections · {dealer.returnWindowDays}-day return window ·
-            Home delivery
+      <div className="bg-brand text-brand-foreground">
+        <div className="container-page flex min-h-9 items-center justify-center py-1.5 text-xs md:justify-between">
+          <p className="flex items-center gap-1.5 text-center font-medium text-white">
+            <Truck className="size-3.5 shrink-0" aria-hidden="true" />
+            <span>
+              {delivery.local}
+              {delivery.nationwide && <> · {delivery.nationwide}</>}
+              <span className="hidden text-white/75 lg:inline">
+                {" "}
+                · {dealer.returnWindowDays}-day return window · {dealer.inspectionPoints}-point inspections
+              </span>
+            </span>
           </p>
-          <div className="flex items-center gap-4 text-white/85">
+          <div className="hidden items-center gap-4 text-white/85 md:flex">
             <Link href="/locations" className="hover:text-white">
               Locations & hours
             </Link>
@@ -41,6 +50,7 @@ export async function SiteHeader() {
             <Phone className="size-4" aria-hidden="true" />
             <span>{dealer.phone}</span>
           </a>
+          <SiteSearch />
           <SavedLink />
           <AccountMenu />
           <ThemeToggle />

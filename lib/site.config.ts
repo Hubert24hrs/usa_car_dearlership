@@ -20,7 +20,10 @@ export type DealerProfile = {
   returnWindowDays: number;
   returnWindowMiles: number;
   inspectionPoints: number;
-  deliveryRadiusMiles: number;
+  /** Free home delivery radius around each store, in miles. */
+  freeDeliveryMiles: number;
+  /** Advertise discounted delivery to all 50 states. */
+  nationwideDelivery: boolean;
 };
 
 export const DEFAULT_DEALER_PROFILE: DealerProfile = {
@@ -34,14 +37,34 @@ export const DEFAULT_DEALER_PROFILE: DealerProfile = {
   returnWindowDays: 7,
   returnWindowMiles: 400,
   inspectionPoints: 172,
-  deliveryRadiusMiles: 150,
+  freeDeliveryMiles: 30,
+  nationwideDelivery: true,
 };
+
+/** Suggested searches shown in the search dialog and on /search. */
+export const POPULAR_SEARCHES = ["Toyota RAV4", "Tesla Model Y", "Ford F-150", "Honda Civic", "Electric SUV", "Hybrid under 30k", "Jeep Wrangler", "Minivan"];
+
+/** Delivery promise shown across the site, e.g. "Free delivery within 30 miles". */
+export function deliveryOffer(dealer: Pick<DealerProfile, "freeDeliveryMiles" | "nationwideDelivery">) {
+  const local = `Free delivery within ${dealer.freeDeliveryMiles} miles`;
+  const nationwide = dealer.nationwideDelivery ? "Discounted delivery to all 50 states" : null;
+  return {
+    local,
+    nationwide,
+    /** One line for banners: "Free delivery within 30 miles · Discounted delivery to all 50 states" */
+    short: nationwide ? `${local} · ${nationwide}` : local,
+    /** Sentence for body copy. */
+    sentence: nationwide
+      ? `Free delivery within ${dealer.freeDeliveryMiles} miles of our stores, and deeply discounted delivery to all 50 states.`
+      : `Free delivery within ${dealer.freeDeliveryMiles} miles of our stores.`,
+  };
+}
 
 export const SITE = {
   name: DEFAULT_DEALER_PROFILE.name,
   shortName: "Prestige Auto",
   description:
-    "Shop new, used and certified pre-owned EVs, hybrids, gas and diesel vehicles with transparent pricing, multi-point inspections, a no-pressure return window and home delivery.",
+    "Shop new, used and certified pre-owned EVs, hybrids, gas and diesel vehicles with transparent pricing, multi-point inspections, a no-pressure return window, free local delivery and discounted delivery to all 50 states.",
   locale: "en_US",
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
   ogImage: "/opengraph-image",

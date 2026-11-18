@@ -1,4 +1,4 @@
-import { AlertTriangle, BadgeDollarSign, CalendarCheck, CarFront, MapPin, MessageSquare, Phone, Repeat } from "lucide-react";
+import { AlertTriangle, BadgeDollarSign, CalendarCheck, CarFront, MapPin, MessageSquare, Phone, Repeat, Truck } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -21,7 +21,7 @@ import { getFeaturedVehicles } from "@/lib/inventory/vehicles";
 import { formatHour, formatMileage, formatPrice, vehicleTitle } from "@/lib/format";
 import { PRICING_CONFIG } from "@/lib/pricing.config";
 import { vehicleJsonLd } from "@/lib/seo";
-import { absoluteUrl, smsHref, telHref } from "@/lib/site.config";
+import { absoluteUrl, deliveryOffer, smsHref, telHref } from "@/lib/site.config";
 
 /** ISR: vehicle pages are static and refreshed every 10 minutes or on inventory changes. */
 export const revalidate = 600;
@@ -75,6 +75,7 @@ export default async function VehiclePage({ params }: Props) {
   const leadVehicle = { vehicleId: vehicle.id, vin: vehicle.vin, title, price: vehicle.displayPrice, locationId: vehicle.location.id };
   const phone = vehicle.location.phone || dealer.phone;
   const smsPhone = vehicle.location.smsPhone || dealer.smsPhone;
+  const delivery = deliveryOffer(dealer);
   const sold = vehicle.status === "SOLD";
 
   return (
@@ -183,6 +184,16 @@ export default async function VehiclePage({ params }: Props) {
                     </a>
                   </Button>
                 </div>
+              </div>
+            )}
+
+            {!sold && (
+              <div className="mt-4 flex gap-3 rounded-xl bg-muted/60 p-3 text-sm">
+                <Truck className="mt-0.5 size-5 shrink-0 text-cta" aria-hidden="true" />
+                <p>
+                  <span className="font-semibold">{delivery.local} of our stores.</span>
+                  {delivery.nationwide && <span className="block text-muted-foreground">{delivery.nationwide}, at a deeply discounted rate.</span>}
+                </p>
               </div>
             )}
 

@@ -145,14 +145,15 @@ Manual form ─────┘                                            │
 
 ### Demo vehicle photos
 
-Every catalog model has **two AI-generated studio photos in different paint colors (604 images)**. They were made with Higgsfield (`gpt_image_2_6`) from text prompts only; no third-party photos were used as input. Each demo vehicle takes its exterior color from the photo it uses. The URLs are listed in [`prisma/seed-data/vehicle-images.json`](prisma/seed-data/vehicle-images.json), keyed by `Make|Model`. A model without a photo falls back to the generated SVG artwork served at `/api/placeholder/vehicle`.
+Every catalog model has **two AI-generated studio photos in different paint colors (604 images)**. They were made with Higgsfield (`gpt_image_2_6`) from text prompts only; no third-party photos were used as input. Each demo vehicle takes its exterior color from the photo it uses. They are self-hosted as compressed JPEGs in `public/vehicles/` (about 60 KB each, 35 MB total) and listed in [`prisma/seed-data/vehicle-images.json`](prisma/seed-data/vehicle-images.json), keyed by `Make|Model`, with each original generation URL kept as `source`. A model without a photo falls back to the generated SVG artwork served at `/api/placeholder/vehicle`.
 
 - These photos are **illustrative only**. Demo inventory is hidden in production unless `SHOW_DEMO_INVENTORY=true`; real listings must use photos of the actual unit.
-- The images are hosted on Higgsfield's CDN (`*.cloudfront.net`, already allowed in `next.config.ts`). For a long-lived staging site, copy them to your own storage (Cloudinary/S3) and rewrite the manifest URLs.
+- Serving small local files means the Next.js image optimizer never waits on a large remote download. The originals were 2 to 3 MB PNGs, and on slower connections they could exceed the optimizer's 7-second fetch limit and show up blank. [`scripts/optimize-vehicle-images.mjs`](scripts/optimize-vehicle-images.mjs) does the conversion; it runs from the manual **Optimize vehicle photos** GitHub Actions workflow.
 
 ## Search & SEO URLs
 
 - Faceted filters: condition, make, model, trim, year, price, monthly payment, mileage, fuel, body, drivetrain, transmission, exterior/interior color family, features, EV range, MPG, location. Counts are **disjunctive** (each facet ignores its own selection) and update live.
+- **Site search** (header magnifier, `/search`, or Ctrl+K) goes straight to a car's page when the VIN, stock number or search matches exactly one car in stock, to the matching inventory when several do, and to **similar cars in stock** when nothing does. Free text like "electric suv under 50k", "chevy silverado" or "porsche 911" is understood by [`lib/inventory/search-intent.ts`](lib/inventory/search-intent.ts) (makes, aliases, models, body style, fuel, condition, year, price and monthly budget). Similar cars are ranked by body style, fuel, make, price and year ([`lib/inventory/smart-search.ts`](lib/inventory/smart-search.ts)). The dialog shows live in-stock matches as you type.
 - Keyword search uses Postgres full-text with prefix matching and English stemming over a denormalized `search_text` column; `SEARCH_DRIVER=meilisearch` swaps in Meilisearch with automatic fallback.
 - Clean, canonical SEO URLs: `/inventory/{condition}/{fuel}/{body}/{make}/{model}?…` — e.g. `/inventory/electric/suv`, `/inventory/used/toyota/camry`. Vehicle pages are `/inventory/{year-make-model-trim-vin}` (ISR, revalidated on change).
 - Sort: featured → newest (default), price, monthly payment, year, mileage, EV range, relevance.
@@ -207,7 +208,7 @@ Set `E2E_BASE_URL` to test an already-running server, or `E2E_SKIP_BUILD=1` to r
 
 ## Pre-launch checklist
 
-- [ ] Replace placeholder locations, phone numbers (555-01xx), dealer license, policies (returns, inspection, delivery) and team content.
+- [ ] Replace placeholder locations, phone numbers (555-01xx), dealer license, policies (returns, inspection) and team content. Confirm the delivery offer (free within 30 miles, discounted to all 50 states), which is set in Admin → Settings → Dealer profile.
 - [ ] Counsel review: pricing/payment disclaimers, multipliers vs. Reg Z/M, state advertising rules (dealer fees), TCPA consent text, privacy policy, terms.
 - [ ] Verify EV incentive information (placeholder on `/electric-hybrid`).
 - [ ] Remove demo data (`SHOW_DEMO_INVENTORY` unset in production) and connect real inventory feeds. Never present the AI-generated demo photos as actual vehicles for sale.

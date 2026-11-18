@@ -38,7 +38,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const { filters, title } = await resolve(props);
   return {
     title: `${title} for sale`,
-    description: `Shop ${title.toLowerCase()} with transparent pricing, estimated payments, home delivery and a no-pressure return window.`,
+    description: `Shop ${title.toLowerCase()} with transparent pricing, estimated payments, free local delivery and a no-pressure return window.`,
     alternates: { canonical: buildInventoryHref({ ...filters, page: 1, view: "grid", sort: "featured" }, { includePage: false }) },
   };
 }

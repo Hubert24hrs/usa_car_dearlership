@@ -86,7 +86,8 @@ export default async function HomePage() {
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/80">
               New, used and certified EVs, hybrids, gas and diesel vehicles, with estimated payments on every listing,
-              home delivery and a {dealer.returnWindowDays}-day return window.
+              free delivery within {dealer.freeDeliveryMiles} miles and a {dealer.returnWindowDays}-day return window.
+              {dealer.nationwideDelivery && " We also deliver to all 50 states at a deeply discounted rate."}
             </p>
           </div>
           <div className="hidden lg:block" aria-hidden="true" />
@@ -226,7 +227,13 @@ export default async function HomePage() {
             { icon: CircleDollarSign, title: "Transparent pricing", text: "One clear price and an estimated payment on every vehicle. No haggling, no surprises." },
             { icon: ShieldCheck, title: `${dealer.inspectionPoints}-point inspection`, text: "Every pre-owned vehicle is inspected and reconditioned by certified technicians." },
             { icon: RotateCcw, title: `${dealer.returnWindowDays}-day return window`, text: `Love it or return it within ${dealer.returnWindowDays} days or ${formatNumber(dealer.returnWindowMiles)} miles. Terms apply.` },
-            { icon: Truck, title: "Home delivery", text: `Sign online and we'll deliver within ${dealer.deliveryRadiusMiles} miles of our stores.` },
+            {
+              icon: Truck,
+              title: `Free delivery within ${dealer.freeDeliveryMiles} miles`,
+              text: dealer.nationwideDelivery
+                ? `Sign online and we'll deliver free within ${dealer.freeDeliveryMiles} miles of our stores. Anywhere else in the US, delivery is deeply discounted.`
+                : `Sign online and we'll deliver free within ${dealer.freeDeliveryMiles} miles of our stores.`,
+            },
           ].map((item) => (
             <div key={item.title} className="rounded-2xl border bg-card p-6 shadow-soft">
               <item.icon className="mb-4 size-8 text-cta" aria-hidden="true" />

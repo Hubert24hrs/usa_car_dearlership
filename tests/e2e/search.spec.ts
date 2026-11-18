@@ -39,3 +39,27 @@ test.describe("search", () => {
     expect(response?.status()).toBe(404);
   });
 });
+
+test.describe("smart search", () => {
+  test("goes straight to an in-stock car and shows similar cars when one isn't in stock", async ({ page }) => {
+    await page.goto("/inventory");
+    const href = await page.locator("article h3 a").first().getAttribute("href");
+    expect(href).toBeTruthy();
+    await page.goto(`/search?q=${href!.slice(-17).toUpperCase()}`);
+    await expect(page).toHaveURL(new RegExp(`${href}$`));
+
+    await page.goto("/search?q=Lamborghini+Aventador");
+    await expect(page.getByRole("heading", { name: /in stock right now/ })).toBeVisible();
+    await expect(page.locator("article").first()).toBeVisible();
+  });
+
+  test("header search shows live in-stock matches", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("link", { name: "Search cars" }).click();
+    const dialog = page.getByRole("dialog");
+    await dialog.getByLabel("Search cars").fill("toyota");
+    await expect(dialog.getByText(/in stock/i).first()).toBeVisible();
+    await expect(dialog.locator('a[href^="/inventory/"]').first()).toBeVisible();
+  });
+});

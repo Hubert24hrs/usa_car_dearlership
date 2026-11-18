@@ -126,8 +126,17 @@ export function DealerProfileForm({ initial }: { initial: DealerProfile }) {
         {num("returnWindowDays", "Return window (days)")}
         {num("returnWindowMiles", "Return window (miles)")}
         {num("inspectionPoints", "Inspection points")}
-        {num("deliveryRadiusMiles", "Delivery radius (miles)")}
+        {num("freeDeliveryMiles", "Free delivery radius (miles)")}
       </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          className="size-4 accent-[var(--cta)]"
+          checked={v.nationwideDelivery}
+          onChange={(e) => setV({ ...v, nationwideDelivery: e.target.checked })}
+        />
+        Advertise discounted delivery to all 50 states
+      </label>
       <Button type="submit" disabled={pending} className="bg-cta text-cta-foreground hover:bg-cta-hover">
         {pending ? <Loader2 className="animate-spin" /> : <Save />} Save dealer profile
       </Button>

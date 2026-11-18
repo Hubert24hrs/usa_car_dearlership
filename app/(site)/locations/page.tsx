@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LocationsMap } from "@/components/home/locations-map";
 import { PageHeader } from "@/components/layout/page-header";
-import { cachedLocations } from "@/lib/inventory/cached";
+import { cachedDealerProfile, cachedLocations } from "@/lib/inventory/cached";
 import { formatHour } from "@/lib/format";
-import { telHref } from "@/lib/site.config";
+import { deliveryOffer, telHref } from "@/lib/site.config";
 
 export const revalidate = 3600;
 export const metadata: Metadata = {
@@ -15,10 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default async function LocationsPage() {
-  const locations = await cachedLocations();
+  const [locations, dealer] = await Promise.all([cachedLocations(), cachedDealerProfile()]);
   return (
     <>
-      <PageHeader title="Locations & hours" crumbs={[{ name: "Locations", href: "/locations" }]} description="Visit any of our stores, or shop online and we'll deliver to you." />
+      <PageHeader
+        title="Locations & hours"
+        crumbs={[{ name: "Locations", href: "/locations" }]}
+        description={`Visit any of our stores, or shop online. ${deliveryOffer(dealer).sentence}`}
+      />
       <div className="container-page space-y-12 py-12">
         <LocationsMap locations={locations} />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">

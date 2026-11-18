@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cachedDealerProfile } from "@/lib/inventory/cached";
 import { PRICING_CONFIG } from "@/lib/pricing.config";
 import { shouldShowDemoInventory } from "@/lib/settings";
-import { FOOTER_NAV, LEGAL_NAV, telHref } from "@/lib/site.config";
+import { deliveryOffer, FOOTER_NAV, LEGAL_NAV, telHref } from "@/lib/site.config";
 import { Logo } from "./logo";
 
 export async function SiteFooter() {
@@ -14,8 +14,8 @@ export async function SiteFooter() {
         <div className="space-y-4 lg:col-span-2">
           <Logo />
           <p className="max-w-sm text-sm text-muted-foreground">
-            Transparent pricing on new, used and certified pre-owned electric, hybrid, gas and diesel vehicles, with
-            home delivery and a no-pressure return window.
+            Transparent pricing on new, used and certified pre-owned electric, hybrid, gas and diesel vehicles, with a
+            no-pressure return window. {deliveryOffer(dealer).sentence}
           </p>
           <address className="space-y-1 text-sm not-italic text-muted-foreground">
             <p>{dealer.address}</p>
