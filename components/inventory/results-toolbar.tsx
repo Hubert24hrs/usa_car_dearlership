@@ -1,7 +1,6 @@
 "use client";
 
 import { LayoutGrid, List, SlidersHorizontal, X } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { SORT_OPTIONS, type SortKey } from "@/lib/inventory/constants";
@@ -11,6 +10,7 @@ import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { FiltersPanel } from "./filters-panel";
 import { useInventoryNav } from "./inventory-nav";
+import { useMobileFiltersOpen } from "./mobile-filters-state";
 
 export function SortSelect() {
   const { filters, navigate } = useInventoryNav();
@@ -60,7 +60,7 @@ export function ViewToggle() {
 
 export function MobileFilters({ facets, total }: { facets: InventoryFacets; total: number }) {
   const { filters, isPending } = useInventoryNav();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useMobileFiltersOpen();
   const active = countActiveFilters(filters);
   return (
     <Sheet open={open} onOpenChange={setOpen}>

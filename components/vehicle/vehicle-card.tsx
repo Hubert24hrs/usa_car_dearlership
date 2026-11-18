@@ -46,7 +46,8 @@ export function VehicleCard({
         "group relative flex overflow-hidden rounded-2xl border bg-card shadow-soft transition-shadow hover:shadow-lift",
         isList ? "flex-col sm:flex-row" : "flex-col",
       )}
-      aria-labelledby={`vehicle-${vehicle.id}-title`}
+      // aria-label rather than aria-labelledby: the same car can appear in two rails on one page.
+      aria-label={fullTitle}
     >
       <div className={cn("relative", isList && "sm:w-80 sm:shrink-0")}>
         <CardImageCarousel
@@ -73,7 +74,7 @@ export function VehicleCard({
 
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
-          <h3 id={`vehicle-${vehicle.id}-title`} className="text-base font-semibold leading-snug">
+          <h3 className="text-base font-semibold leading-snug">
             <Link href={href} className="hover:underline focus-visible:underline">
               {title}
             </Link>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -37,6 +37,8 @@ function CheckboxFacet({
   label: string;
 }) {
   const { filters, navigate } = useInventoryNav();
+  // The panel renders twice (desktop sidebar + mobile sheet), so ids must be unique per instance.
+  const baseId = useId();
   const [expanded, setExpanded] = useState(false);
   const [query, setQuery] = useState("");
   // Always show selected values, even if their count dropped to zero.
@@ -62,7 +64,7 @@ function CheckboxFacet({
       )}
       <ul className="space-y-1.5">
         {visible.map((option) => {
-          const id = `f-${facetKey}-${option.value}`.replace(/[^a-zA-Z0-9_-]/g, "_");
+          const id = `${baseId}-${facetKey}-${option.value.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
           const checked = selected.includes(option.value);
           return (
             <li key={option.value} className="flex items-center gap-2.5">

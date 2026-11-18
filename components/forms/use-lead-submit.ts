@@ -1,12 +1,24 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef, useState, type BaseSyntheticEvent } from "react";
 import type { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
 import { submitLead } from "@/lib/leads/actions";
 import { LEAD_TYPE_LABELS, type LeadTypeValue } from "@/lib/leads/schema";
+
+/**
+ * Reads the honeypot straight from the submitted <form>. Scripted bots often set
+ * input values directly, which never reaches React Hook Form's state, so the
+ * DOM value is the reliable signal.
+ */
+function honeypotFromDom(event?: BaseSyntheticEvent): string | undefined {
+  const form = event?.target;
+  if (typeof HTMLFormElement === "undefined" || !(form instanceof HTMLFormElement)) return undefined;
+  const value = new FormData(form).get("website");
+  return typeof value === "string" && value.trim() !== "" ? value : undefined;
+}
 
 /**
  * Shared submit handler for every lead form: adds anti-spam metadata, calls
@@ -22,9 +34,10 @@ export function useLeadSubmit<T extends FieldValues>(
   const startedAt = useRef(Date.now());
   const [submittedId, setSubmittedId] = useState<string | null>(null);
 
-  async function onSubmit(values: T) {
+  async function onSubmit(values: T, event?: BaseSyntheticEvent) {
     const result = await submitLead({
       ...values,
+      website: honeypotFromDom(event) ?? values.website,
       type,
       vehicleId: extra.vehicleId,
       locationId: extra.locationId,
@@ -39,7 +52,7 @@ export function useLeadSubmit<T extends FieldValues>(
       return;
     }
     track({ name: "generate_lead", params: { lead_type: type, vin: extra.vin, value: extra.price } });
-    toast.success("Request sent!", { description: `${LEAD_TYPE_LABELS[type]} — we'll be in touch shortly.` });
+    toast.success("Request sent!", { description: `${LEAD_TYPE_LABELS[type]}: we'll be in touch shortly.` });
     setSubmittedId(result.id);
   }
 

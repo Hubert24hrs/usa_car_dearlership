@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { InventorySkeleton } from "@/components/inventory/inventory-skeleton";
 import { InventoryView } from "@/components/inventory/inventory-view";
 import { cachedInventoryStats } from "@/lib/inventory/cached";
 import { buildInventoryHref, describeFilters, parseFilters } from "@/lib/inventory/filters";
@@ -41,7 +43,16 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * Validation (which may 404) runs before the Suspense boundary, so unknown
+ * makes/models get a real 404 status. A route-level loading.tsx would start
+ * streaming a 200 response before notFound() could run.
+ */
 export default async function BrowsePage(props: Props) {
   const { filters, title } = await resolve(props);
-  return <InventoryView filters={filters} heading={title} />;
+  return (
+    <Suspense fallback={<InventorySkeleton />}>
+      <InventoryView filters={filters} heading={title} />
+    </Suspense>
+  );
 }

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { InventorySkeleton } from "@/components/inventory/inventory-skeleton";
 import { InventoryView } from "@/components/inventory/inventory-view";
 import { buildInventoryHref, countActiveFilters, describeFilters, parseFilters } from "@/lib/inventory/filters";
 
@@ -20,5 +22,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function InventoryPage({ searchParams }: Props) {
   const { filters } = parseFilters(await searchParams);
-  return <InventoryView filters={filters} />;
+  return (
+    <Suspense fallback={<InventorySkeleton />}>
+      <InventoryView filters={filters} />
+    </Suspense>
+  );
 }
